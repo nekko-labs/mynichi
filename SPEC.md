@@ -54,6 +54,7 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 ### Translate (OCR photo / live) [planned]
 - Take a photo, pick an existing photo, or paste/type text; OCR extracts the Japanese. [planned]
 - Results view shows: original text (kanji), furigana, romaji pronunciation, literal English translation, and a practical translation ("what it really means / what to do"). [planned]
+- Privacy-respecting model policy: free-tier translation runs on models we host ourselves (no third-party API sees your text); premium uses a frontier model with the same no-training promise. [planned]
 - Copy any layer; tap any word/phrase to add it to a practice list or open it in the dictionary. [planned]
 - Live camera translate mode (Google Translate style overlay). [planned, after still-photo flow]
 
