@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, type ColorValue } from 'react-native';
 
 import { accents, fonts, palette } from '@/theme/tokens';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
 function icon(name: IconName) {
-  return ({ color, size }: { color: string; size: number }) => (
-    <Ionicons name={name} color={color} size={size} />
+  return ({ color, size }: { color: ColorValue; size: number }) => (
+    <Ionicons name={name} color={color as string} size={size} />
   );
 }
 

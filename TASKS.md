@@ -132,12 +132,11 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Now / In Progress
 
-- [ ] **T10 — Paste/type translate flow** (next up): text in -> segmented result view (kanji + furigana ruby + romaji + literal + practical) via API. Pipeline: kuromoji segmentation/furigana (deterministic, no LLM) + **local SLM translation** (see 2026-07-18 bake-off decision: PLaMo-2-translate for the translation, small instruct SLM for the practical/JSON layer grounded on it; Claude stays the premium path). Bench harness: `apps/api/bench/translate-slm-bakeoff.ts`. The result view component is shared by OCR flow later. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
+- [ ] **T11 — Photo OCR (still)** (next up): camera + photo-library input, on-device Vision OCR module (iOS), region selection, feed into T10's pipeline. Cloud OCR fallback endpoint. · [spec](SPEC.md#translate-ocr-photo--live-in-progress) · `Added: 2026-07-18`
 
 ## Backlog / Planned
 
 ### Translate
-- [ ] **T11 — Photo OCR (still)**: camera + photo-library input, on-device Vision OCR module (iOS), region selection, feed into T10's pipeline. Cloud OCR fallback endpoint. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 - [ ] **T12 — Tap-to-save from translation**: tap any segment to add to a list (opens quick-add prefilled) or open in dictionary. Translation history stored locally. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 - [ ] **T13 — Live camera overlay translate** (fast-follow). · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 
@@ -170,6 +169,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Done / Shipped
 
+- [x] **T10 — Paste/type translate flow**: `POST /translate` on the API runs kuromoji segmentation (furigana fitting via `packages/core` `fitFurigana`, unit-tested; romaji via wanakana) in parallel with the SLM pipeline (`apps/api/src/translate/backends.ts`: PLaMo-2-translate produces the reference translation, Shisa V2.1 8B writes literal+practical JSON grounded on it, `think:false` + Ollama structured outputs; `TRANSLATE_BACKEND=anthropic` switches to Claude via the official SDK). Translate tab is a working RSD screen (`app/(tabs)/index.tsx` + `components/ruby-text.tsx`): textarea in, ruby-annotated original + romaji + literal + practical out, loading/error/empty states. Verified in-browser end to end (grounding confirmed: 「巻きで」 translated correctly through the full stack). Known limits: kuromoji misreads some prefixed compounds (ご入店 -> "go iri ten"; revisit with dictionary-backed readings in T30/T31), and prod web shows a friendly "engine not connected" until the API is hosted (GPU serving open thread). · [spec](SPEC.md#translate-ocr-photo--live-in-progress) · `Done: 2026-07-18`
 - [x] **T3 — Web deploy**: Vercel project `mynichi` (nekkolabs team), production deploy from `expo export -p web` (vercel.json: bun install, cleanUrls, `apps/native/dist`), GitHub repo connected for auto-deploys on merge to main, `mynichi.app` + `www.mynichi.app` assigned and DNS verified live (200 on /, /practice). `*.vercel.app` URLs stay behind Vercel deployment protection by design; the custom domain is the public URL. · [spec](SPEC.md#platforms-planned) · `Done: 2026-07-18`
 - [x] **T2 — Design tokens + app shell**: sketchbook tokens in `apps/native/src/theme/` (`tokens.css.ts` StyleX vars with dark mode via media-query defaults + `tokens.ts` for RN chrome), Klee One / Zen Kaku Gothic New via expo-google-fonts, 5-tab expo-router shell with RSD `FeatureScreen` placeholders (ruby reading, brush underline, chips). Verified on web export: fonts load, StyleX CSS extracted, tab navigation works, dark tokens apply. · [spec](SPEC.md#user-journeys--experiences) · `Done: 2026-07-18`
 - [x] **T1 — Monorepo scaffold**: bun workspaces + turbo (pathtraveled shape); `apps/native` Expo SDK 57 + expo-router + react-strict-dom 0.0.55 (babel preset + postcss plugin + `@react-strict-dom` directive in global.css); `apps/api` Bun + Hono `/health`; `packages/core` stub. Repo `nekko-labs/mynichi` (private). Gotchas recorded in workspace memory (babel-preset-expo must be explicit; StyleX vars files are `*.css.ts`; relative token imports only). · [spec](SPEC.md#platforms-planned) · `Done: 2026-07-18`
