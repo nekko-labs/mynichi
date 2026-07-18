@@ -1,0 +1,29 @@
+# deps
+node_modules/
+
+# expo / native
+.expo/
+apps/native/dist/
+apps/native/ios/
+apps/native/android/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# build / tooling
+dist/
+.turbo/
+.vercel/
+*.tsbuildinfo
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# os / editor
+.DS_Store
+Thumbs.db

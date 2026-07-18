@@ -1,0 +1,26 @@
+html,
+body {
+  height: initial;
+}
+
+body {
+  overflow: auto;
+  background-color: #faf7f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #17161a;
+  }
+}
+
+#root {
+  flex-direction: column;
+}
+
+/*
+ * This directive is used by the react-strict-dom postcss plugin.
+ * It is automatically replaced with generated CSS during builds.
+ */
+
+@react-strict-dom;
