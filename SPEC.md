@@ -30,7 +30,7 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 
 **1. The scary letter (Translate).** A pension notice arrives. You open mynichi, snap a photo (or pick one from your library, or paste text). The app OCRs it and shows the original text with furigana, romaji pronunciation, a literal English translation, and a practical "what this actually means / what you should do" translation. You tap the two or three words worth keeping and add them to your "City hall / paperwork" list in one gesture.
 
-**2. The word you overheard (Lists).** A coworker says 「納期」 and you nod along, clueless. On the train home you open mynichi and add it to your "Work" list in five seconds: the app fills in the reading, meaning, and an example sentence for you. Lists are organized by life category (life admin, work, real estate, health, tech, food, ...), not by JLPT level. Later, you review the list Anki-style with spaced repetition. The point is never "here are 2,000 random words"; it's "here are the words *your* life handed you."
+**2. The word you overheard (Lists).** A coworker says 「納期」 and you nod along, clueless. On the train home you open mynichi and add it to your "Work" list in five seconds: the app fills in the reading, meaning, and an example sentence for you. Lists are organized by life category (life admin, work, real estate, health, tech, food, ...), not by JLPT level. Later, you review the list Anki-style with spaced repetition. For kanji, review demands your hand as well as your memory: trace the character with stroke-order guidance, or go blind and draw it from nothing, with the app responding to every stroke as it lands (right stroke, wrong order, wrong shape) so you feel the correction mid-character instead of after. The point is never "here are 2,000 random words"; it's "here are the words *your* life handed you."
 
 **3. What IS that kanji (Dictionary).** A sign has a kanji you can't type. You draw it with your finger and the app recognizes it. Or you type the English meaning or romaji pronunciation. Or you build it from radicals with a friendly radical picker. The entry shows readings, meanings, stroke order, and compounds, and a "confusables" panel: kanji that look similar (e.g. 未/末, 待/持) shown side by side with the differing radicals/strokes color-highlighted so you finally see the difference.
 
@@ -62,6 +62,10 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Quick-add in seconds: type a word/phrase you heard and the app enriches it (reading, furigana, meaning, example). Designed for "someone just said this" capture. [planned]
 - Items can be kanji, words, phrases, or grammar points. [planned]
 - Spaced-repetition review (Anki-style) per list or across lists. [planned]
+- **Stroke-order practice** as a first-class part of spaced repetition for kanji items. [planned]
+  - Guided trace mode: the kanji is shown faintly with stroke-order cues; you trace it correctly. [planned]
+  - Blind recall mode: nothing is shown; you draw the kanji from memory and the app responds **stroke by stroke** (correct, wrong order, wrong direction, malformed shape) with gentle nudges or a reveal-next-stroke hint. [planned]
+  - Writing performance feeds the SRS schedule alongside recognition (a kanji you can read but not write stays in rotation). [planned]
 - Items link back to their source (photo translation, dictionary lookup) when they came from one. [planned]
 
 ### Dictionary [planned]
