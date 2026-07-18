@@ -19,7 +19,10 @@ from pathlib import Path
 import requests
 
 BASE_URL = "http://127.0.0.1:1338/v1"
-TEACHER = "qwen/qwen3.6-27b"
+# Default teacher. qwen3.6-27b (Apache) is the license-cleanest choice but its
+# always-on reasoning makes bulk generation ~10x slower; gemma-4-31b-qat is the
+# fast/strong default. Swap with --teacher for a license-pure regeneration.
+TEACHER = "google/gemma-4-31b-qat"
 
 CATEGORIES: dict[str, str] = {
     "ward-office": "letters and notices from a Japanese city/ward office (国民健康保険, 年金, 住民税, マイナンバー, 児童手当)",
@@ -148,6 +151,7 @@ def split(labeled: Path, outdir: Path, heldout_n: int) -> None:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
+    p.add_argument("--teacher", default=TEACHER)
     sub = p.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("sources")
     s.add_argument("--out", type=Path, default=Path("data/sources.jsonl"))
@@ -161,6 +165,7 @@ if __name__ == "__main__":
     sp.add_argument("--outdir", type=Path, default=Path("data"))
     sp.add_argument("--heldout", type=int, default=80)
     a = p.parse_args()
+    TEACHER = a.teacher
     if a.cmd == "sources":
         gen_sources(a.out, a.per_batch, a.batches)
     elif a.cmd == "labels":
