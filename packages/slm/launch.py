@@ -5,6 +5,7 @@ must run detached. This wrapper starts train.py + eval.py as a background
 process and lets the agent poll for the result.
 
   python launch.py start --out runs/r8 --rank 8 --lr 2e-4 --epochs 2
+  python launch.py eval --out runs/cand-e4b -- --api-model google/gemma-4-e4b
   python launch.py status --out runs/r8
   python launch.py active
 
@@ -44,7 +45,8 @@ def start(args: argparse.Namespace, extra: list[str]) -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "result.json").write_text(json.dumps({"status": "running", "started": time.time()}), encoding="utf-8")
     log = (out / "log.txt").open("w", encoding="utf-8")
-    worker_args = [PYTHON, str(HERE / "launch.py"), "_worker", "--out", str(out), *extra]
+    worker = "_worker_eval" if args.cmd == "eval" else "_worker"
+    worker_args = [PYTHON, str(HERE / "launch.py"), worker, "--out", str(out), *extra]
     proc = subprocess.Popen(
         worker_args,
         stdout=log,
@@ -79,6 +81,24 @@ def worker(args: argparse.Namespace, extra: list[str]) -> None:
         ACTIVE.unlink()
 
 
+def worker_eval(args: argparse.Namespace, extra: list[str]) -> None:
+    out = Path(args.out)
+    extra = [a for a in extra if a != "--"]
+    try:
+        cmd = [PYTHON, str(HERE / "eval.py"), *extra]
+        print(f"+ {' '.join(cmd)}", flush=True)
+        proc = subprocess.run(cmd, check=True, cwd=str(HERE), capture_output=True, text=True)
+        print(proc.stderr, flush=True)
+        metrics = json.loads(proc.stdout.strip().splitlines()[-1])
+        result = {"status": "done", **metrics}
+    except Exception as e:  # noqa: BLE001 - record any failure for the poller
+        result = {"status": "error", "error": str(e)[:2000]}
+    result["ended"] = time.time()
+    (out / "result.json").write_text(json.dumps(result), encoding="utf-8")
+    if ACTIVE.exists():
+        ACTIVE.unlink()
+
+
 def status(args: argparse.Namespace) -> None:
     out = Path(args.out)
     res = out / "result.json"
@@ -101,13 +121,15 @@ def active() -> None:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["start", "status", "active", "_worker"])
+    p.add_argument("cmd", choices=["start", "eval", "status", "active", "_worker", "_worker_eval"])
     p.add_argument("--out")
     known, rest = p.parse_known_args()
-    if known.cmd == "start":
+    if known.cmd in ("start", "eval"):
         start(known, rest)
     elif known.cmd == "_worker":
         worker(known, rest)
+    elif known.cmd == "_worker_eval":
+        worker_eval(known, rest)
     elif known.cmd == "status":
         status(known)
     else:

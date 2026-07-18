@@ -39,12 +39,6 @@ CATEGORIES: dict[str, str] = {
     "official-forms": "field labels and instructions on Japanese paperwork (記入例, 押印, 続柄, 該当する方に〇)",
 }
 
-SOURCE_SCHEMA = {
-    "type": "object",
-    "properties": {"texts": {"type": "array", "items": {"type": "string"}}},
-    "required": ["texts"],
-}
-
 LABEL_SYSTEM = """You are an expert Japanese-to-English translator for foreign residents of Japan.
 Translate the given Japanese text. Respond with JSON only:
 {
@@ -53,31 +47,25 @@ Translate the given Japanese text. Respond with JSON only:
 }
 Idiom care (business Japanese): 巻きで/巻きでお願い means EARLIER/faster than planned, never an extension. 持ち帰る in a meeting means to take a question back to consider internally, not to physically take something home. なるはや means as soon as possible. 前倒し means moving something earlier. リスケ means reschedule."""
 
-LABEL_SCHEMA = {
-    "type": "object",
-    "properties": {"literal": {"type": "string"}, "practical": {"type": "string"}},
-    "required": ["literal", "practical"],
-}
+def extract_json(raw: str, opener: str, closer: str):
+    """Lenient JSON extraction. Grammar-constrained decoding (json_schema) stalls
+    gemma in LM Studio, so we prompt for JSON and pull out the first block."""
+    start, end = raw.find(opener), raw.rfind(closer)
+    if start == -1 or end == -1 or end <= start:
+        raise ValueError(f"no JSON block in: {raw[:120]!r}")
+    return json.loads(raw[start : end + 1])
 
 
-def chat(model: str, messages: list[dict], schema: dict | None, temperature: float, retries: int = 3) -> str:
-    body: dict = {"model": model, "messages": messages, "temperature": temperature, "stream": False}
-    if schema is not None:
-        body["response_format"] = {
-            "type": "json_schema",
-            "json_schema": {"name": "out", "strict": True, "schema": schema},
-        }
+def chat(model: str, messages: list[dict], temperature: float, opener: str, closer: str, retries: int = 3):
+    body = {"model": model, "messages": messages, "temperature": temperature, "stream": False, "max_tokens": 4096}
     for attempt in range(retries):
         try:
             r = requests.post(f"{BASE_URL}/chat/completions", json=body, timeout=600)
             r.raise_for_status()
             msg = r.json()["choices"][0]["message"]
-            # LM Studio sometimes routes qwen3.6's constrained output into
-            # reasoning_content and leaves content empty; take whichever has the JSON.
+            # Reasoning models may leave content empty and put text in reasoning_content.
             raw = (msg.get("content") or "").strip() or (msg.get("reasoning_content") or "").strip()
-            if not raw:
-                raise ValueError("empty completion")
-            return raw
+            return extract_json(raw, opener, closer)
         except Exception as e:  # noqa: BLE001 - retry any transport/parse error
             if attempt == retries - 1:
                 raise
@@ -100,11 +88,11 @@ def gen_sources(out: Path, per_batch: int, batches: int) -> None:
                     f"Generate {per_batch} realistic, distinct Japanese texts: {desc}. "
                     "Vary length (5 to 120 characters), politeness level, and topic. "
                     "Write ONLY natural Japanese as it would really appear, no translations, no romaji. "
-                    f"Batch {b + 1} of {batches}, avoid repeating obvious phrasings."
+                    f"Batch {b + 1} of {batches}, avoid repeating obvious phrasings. "
+                    'Respond with ONLY a JSON array of strings: ["...", "..."]'
                 )
-                raw = chat(TEACHER, [{"role": "user", "content": prompt}], SOURCE_SCHEMA, temperature=0.9)
-                texts = json.loads(raw)["texts"]
-                fresh = [t.strip() for t in texts if t.strip() and t.strip() not in seen]
+                texts = chat(TEACHER, [{"role": "user", "content": prompt}], 0.9, "[", "]")
+                fresh = [t.strip() for t in texts if isinstance(t, str) and t.strip() and t.strip() not in seen]
                 for t in fresh:
                     seen.add(t)
                     f.write(json.dumps({"text": t, "category": category}, ensure_ascii=False) + "\n")
@@ -123,13 +111,16 @@ def gen_labels(sources: Path, out: Path) -> None:
         for i, row in enumerate(rows):
             if row["text"] in done:
                 continue
-            raw = chat(
+            label = chat(
                 TEACHER,
                 [{"role": "system", "content": LABEL_SYSTEM}, {"role": "user", "content": row["text"]}],
-                LABEL_SCHEMA,
-                temperature=0.2,
+                0.2,
+                "{",
+                "}",
             )
-            label = json.loads(raw)
+            if not isinstance(label.get("literal"), str) or not isinstance(label.get("practical"), str):
+                print(f"  skipping malformed label for: {row['text'][:40]}", file=sys.stderr)
+                continue
             f.write(json.dumps({**row, **label}, ensure_ascii=False) + "\n")
             f.flush()
             if (i + 1) % 25 == 0:

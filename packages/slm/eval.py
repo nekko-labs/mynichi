@@ -53,7 +53,9 @@ def load_api_generator(model_id: str, base_url: str):
             timeout=300,
         )
         r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"]
+        msg = r.json()["choices"][0]["message"]
+        # Reasoning models may leave content empty and answer in reasoning_content.
+        return (msg.get("content") or "").strip() or (msg.get("reasoning_content") or "").strip()
 
     return generate
 
