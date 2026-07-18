@@ -60,7 +60,7 @@ Core entities (local SQLite, mirrored to Postgres for premium sync):
 - **User** (id, locale, plan, ai_mode: cloud|local, created_at)
 - **List** (id, name, category: life|work|real-estate|health|tech|food|travel|custom, icon/color, created_at)
 - **ListItem** (id, list_id, kind: kanji|word|phrase|grammar, text, reading, furigana_ruby, meaning, example, source: manual|photo|dictionary, source_ref, created_at)
-- **ReviewState** (item_id, due_at, interval, ease, lapses) for SRS (FSRS algorithm)
+- **ReviewState** (item_id, axis: recognition|writing, due_at, interval, ease, lapses) for SRS (FSRS algorithm). Kanji items carry both axes so stroke-order practice schedules independently of recognition; other kinds use recognition only.
 - **Translation** (id, image_ref?, raw_text, segments[] {surface, reading, furigana}, literal_en, practical_en, created_at) history
 - **PracticeSession** (id, scenario, source_lists[], transcript[], model: cloud|local, created_at)
 - Dictionary tables are read-only from the bundled `dict.sqlite` (entries, kanji, radicals, strokes, confusables).
@@ -131,12 +131,11 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Now / In Progress
 
-- [ ] **T3 — Web deploy**: Vercel project `mynichi` (nekkolabs team) created, production deploy live, GitHub repo connected for auto-deploys, `mynichi.app` + `www.mynichi.app` assigned. **Remaining: DNS at Namecheap** (either `A @ 76.76.21.21` + `CNAME www cname.vercel-dns.com`, or switch nameservers to `ns1`/`ns2.vercel-dns.com`). Note: `*.vercel.app` URLs sit behind Vercel deployment protection by design; the public URL is the custom domain. · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
+- [ ] **T10 — Paste/type translate flow** (next up): text in -> segmented result view (kanji + furigana ruby + romaji + literal + practical) via API (kuromoji segmentation + Claude practical translation). The result view component is shared by OCR flow later. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 
 ## Backlog / Planned
 
 ### Translate
-- [ ] **T10 — Paste/type translate flow**: text in -> segmented result view (kanji + furigana ruby + romaji + literal + practical) via API (kuromoji segmentation + Claude practical translation). The result view component is shared by OCR flow later. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 - [ ] **T11 — Photo OCR (still)**: camera + photo-library input, on-device Vision OCR module (iOS), region selection, feed into T10's pipeline. Cloud OCR fallback endpoint. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 - [ ] **T12 — Tap-to-save from translation**: tap any segment to add to a list (opens quick-add prefilled) or open in dictionary. Translation history stored locally. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 - [ ] **T13 — Live camera overlay translate** (fast-follow). · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
@@ -145,6 +144,8 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 - [ ] **T20 — Lists CRUD + local store**: expo-sqlite schema (List, ListItem, ReviewState), category presets with accent colors/icons, list + item screens. · [spec](SPEC.md#practice-lists-planned) · `Added: 2026-07-18`
 - [ ] **T21 — Quick-add with enrichment**: 5-second capture box; API `/enrich` fills reading, furigana, meaning, example (dictionary-first, Claude fallback). · [spec](SPEC.md#practice-lists-planned) · `Added: 2026-07-18`
 - [ ] **T22 — SRS review mode**: FSRS scheduler in `packages/core`, review UI (front/back with furigana toggle), per-list and all-due review. · [spec](SPEC.md#practice-lists-planned) · `Added: 2026-07-18`
+- [ ] **T23 — Stroke-order practice (trace mode)**: writing canvas + KanjiVG stroke engine in `packages/core` (shared with dictionary draw-input T32): faint template, stroke-order cues, per-stroke match on order/direction/shape tolerance. Runs as a card type inside T22 review for kanji items. · [spec](SPEC.md#practice-lists-planned) · `Added: 2026-07-18`
+- [ ] **T24 — Stroke-order practice (blind recall)**: no template shown; stroke-by-stroke live judgment (accept / wrong-order / wrong-direction / malformed) with nudge + reveal-next-stroke hint; writing grade feeds FSRS separately from recognition grade so read-but-can't-write kanji stay in rotation. · [spec](SPEC.md#practice-lists-planned) · `Added: 2026-07-18`
 
 ### Dictionary
 - [ ] **T30 — Dict pipeline + bundled SQLite**: `packages/dict-pipeline` builds dict.sqlite from JMdict + KANJIDIC2 + RADKFILE + KanjiVG; licences/attribution screen. · [spec](SPEC.md#dictionary-planned) · `Added: 2026-07-18`
@@ -168,6 +169,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Done / Shipped
 
+- [x] **T3 — Web deploy**: Vercel project `mynichi` (nekkolabs team), production deploy from `expo export -p web` (vercel.json: bun install, cleanUrls, `apps/native/dist`), GitHub repo connected for auto-deploys on merge to main, `mynichi.app` + `www.mynichi.app` assigned and DNS verified live (200 on /, /practice). `*.vercel.app` URLs stay behind Vercel deployment protection by design; the custom domain is the public URL. · [spec](SPEC.md#platforms-planned) · `Done: 2026-07-18`
 - [x] **T2 — Design tokens + app shell**: sketchbook tokens in `apps/native/src/theme/` (`tokens.css.ts` StyleX vars with dark mode via media-query defaults + `tokens.ts` for RN chrome), Klee One / Zen Kaku Gothic New via expo-google-fonts, 5-tab expo-router shell with RSD `FeatureScreen` placeholders (ruby reading, brush underline, chips). Verified on web export: fonts load, StyleX CSS extracted, tab navigation works, dark tokens apply. · [spec](SPEC.md#user-journeys--experiences) · `Done: 2026-07-18`
 - [x] **T1 — Monorepo scaffold**: bun workspaces + turbo (pathtraveled shape); `apps/native` Expo SDK 57 + expo-router + react-strict-dom 0.0.55 (babel preset + postcss plugin + `@react-strict-dom` directive in global.css); `apps/api` Bun + Hono `/health`; `packages/core` stub. Repo `nekko-labs/mynichi` (private). Gotchas recorded in workspace memory (babel-preset-expo must be explicit; StyleX vars files are `*.css.ts`; relative token imports only). · [spec](SPEC.md#platforms-planned) · `Done: 2026-07-18`
 - [x] **T0 — Spec-driven scaffold**: SPEC.md + TASKS.md written (this pair), workspace layer created at `obsurdian/projects/mynichi/`. · `Done: 2026-07-18`
