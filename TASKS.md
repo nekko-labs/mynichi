@@ -131,7 +131,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Now / In Progress
 
-- [ ] **T3 — Web deploy**: Expo web export building clean (done); Vercel project `mynichi` wired to the repo; `mynichi.app` domain attached (DNS at registrar if needed). · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
+- [ ] **T3 — Web deploy**: Vercel project `mynichi` (nekkolabs team) created, production deploy live, GitHub repo connected for auto-deploys, `mynichi.app` + `www.mynichi.app` assigned. **Remaining: DNS at Namecheap** (either `A @ 76.76.21.21` + `CNAME www cname.vercel-dns.com`, or switch nameservers to `ns1`/`ns2.vercel-dns.com`). Note: `*.vercel.app` URLs sit behind Vercel deployment protection by design; the public URL is the custom domain. · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
 
 ## Backlog / Planned
 
