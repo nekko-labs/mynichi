@@ -131,9 +131,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Now / In Progress
 
-- [ ] **T1 — Monorepo scaffold**: bun workspaces + turbo, `apps/native` (Expo SDK 54 + expo-router + TS strict + react-strict-dom configured), `apps/api` (Bun + Hono health endpoint), `packages/core` stub. Repo on GitHub (`nekko-labs/mynichi`), PR flow with auto-merge. · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
-- [ ] **T2 — Design tokens + app shell**: sketchbook theme tokens (palette, Klee One / Zen Kaku Gothic New fonts, spacing), 5-tab shell (Translate, Lists, Dictionary, Practice, Settings) with on-brand placeholder screens, light/dark. · [spec](SPEC.md#user-journeys--experiences) · `Added: 2026-07-18`
-- [ ] **T3 — Web deploy**: Expo web export building clean; Vercel project `mynichi` wired to the repo; `mynichi.app` domain attached (DNS at registrar if needed). · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
+- [ ] **T3 — Web deploy**: Expo web export building clean (done); Vercel project `mynichi` wired to the repo; `mynichi.app` domain attached (DNS at registrar if needed). · [spec](SPEC.md#platforms-planned) · `Added: 2026-07-18`
 
 ## Backlog / Planned
 
@@ -170,4 +168,6 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Done / Shipped
 
+- [x] **T2 — Design tokens + app shell**: sketchbook tokens in `apps/native/src/theme/` (`tokens.css.ts` StyleX vars with dark mode via media-query defaults + `tokens.ts` for RN chrome), Klee One / Zen Kaku Gothic New via expo-google-fonts, 5-tab expo-router shell with RSD `FeatureScreen` placeholders (ruby reading, brush underline, chips). Verified on web export: fonts load, StyleX CSS extracted, tab navigation works, dark tokens apply. · [spec](SPEC.md#user-journeys--experiences) · `Done: 2026-07-18`
+- [x] **T1 — Monorepo scaffold**: bun workspaces + turbo (pathtraveled shape); `apps/native` Expo SDK 57 + expo-router + react-strict-dom 0.0.55 (babel preset + postcss plugin + `@react-strict-dom` directive in global.css); `apps/api` Bun + Hono `/health`; `packages/core` stub. Repo `nekko-labs/mynichi` (private). Gotchas recorded in workspace memory (babel-preset-expo must be explicit; StyleX vars files are `*.css.ts`; relative token imports only). · [spec](SPEC.md#platforms-planned) · `Done: 2026-07-18`
 - [x] **T0 — Spec-driven scaffold**: SPEC.md + TASKS.md written (this pair), workspace layer created at `obsurdian/projects/mynichi/`. · `Done: 2026-07-18`
