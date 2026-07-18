@@ -1,5 +1,8 @@
 // @mynichi/core: shared types, schemas, and Japanese text utilities.
-// Fills out as features land: jp/ (furigana, kana), srs/ (FSRS), api/ (typed client).
+// Fills out as features land: srs/ (FSRS), api/ (typed client).
+
+export * from './translate';
+export * from './jp';
 
 export const LIST_CATEGORIES = [
   'life',

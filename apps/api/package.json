@@ -14,10 +14,15 @@
     "bun": ">=1.2.0"
   },
   "dependencies": {
-    "hono": "^4.11.5",
-    "zod": "^4.3.6"
+    "@anthropic-ai/sdk": "^0.112.3",
+    "@mynichi/core": "workspace:*",
+    "hono": "^4.12.30",
+    "kuromoji": "^0.1.2",
+    "wanakana": "^5.3.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.6"
+    "@types/bun": "^1.3.6",
+    "@types/kuromoji": "^0.1.3"
   }
 }
