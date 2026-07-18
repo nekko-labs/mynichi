@@ -20,6 +20,9 @@
         "build:web": {
             "outputs": ["dist/**"]
         },
+        "build:marketing": {
+            "outputs": ["dist/**"]
+        },
         "lint": {}
     }
 }

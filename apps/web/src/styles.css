@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+:root {
+  --paper: #faf7f0;
+  --paper-shade: #f1ece1;
+  --ink: #2a2732;
+  --ink-soft: #6b6575;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #17161a;
+    --paper-shade: #221f27;
+    --ink: #f3efe7;
+    --ink-soft: #a39dad;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-shade: var(--paper-shade);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+}
+
+@theme {
+  --color-hanko: #e4573d;
+  --color-aiiro: #3e5c9a;
+  --color-matcha: #7fa65a;
+  --color-yuzu: #f2b441;
+  --color-sakura: #f2a7b8;
+  --font-brand: 'Klee One', 'Zen Kaku Gothic New', sans-serif;
+  --font-body: 'Zen Kaku Gothic New', 'Klee One', sans-serif;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  @apply bg-paper text-ink font-body antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: color-mix(in srgb, #f2b441 45%, transparent);
+}
+
+ruby rt {
+  @apply text-ink-soft;
+  font-size: 0.55em;
+  letter-spacing: 0.05em;
+}
+
+/* Paper-grain: a whisper of texture so flat fills feel like washi */
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: radial-gradient(
+      color-mix(in srgb, var(--ink) 4%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 22px 22px;
+}
+
+/* Marquee */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Blinking caret for typed text */
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* Soft rise used by scroll reveals before GSAP takes over */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
