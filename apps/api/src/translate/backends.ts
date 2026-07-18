@@ -11,6 +11,15 @@ const MODEL_TRANSLATE = process.env.TRANSLATE_MODEL_TRANSLATE ?? 'mitmul/plamo-2
 const MODEL_PRACTICAL =
   process.env.TRANSLATE_MODEL_PRACTICAL ?? 'hf.co/mradermacher/shisa-v2.1-qwen3-8b-GGUF:Q5_K_M';
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-8';
+const LMSTUDIO_URL = process.env.LMSTUDIO_URL ?? 'http://127.0.0.1:1338/v1';
+const MODEL_STUDENT = process.env.TRANSLATE_MODEL_STUDENT ?? 'mynichi-slm';
+
+// Prompt contract of the self-trained student SLM. Must stay byte-identical
+// with packages/slm/common.py STUDENT_SYSTEM (training + eval use the same).
+const STUDENT_SYSTEM =
+  'You translate Japanese for a foreign resident of Japan. Respond with JSON only: ' +
+  '{"literal": "literal English translation mirroring the Japanese structure", ' +
+  '"practical": "what it actually means for the reader, including what to do if it implies an action"}';
 
 const PRACTICAL_SYSTEM = `You are the translation engine inside a Japanese learning app for foreign residents of Japan.
 You are given a Japanese text and a reference translation produced by a specialist translation model. The reference is authoritative for meaning and nuance: never contradict it.
@@ -72,6 +81,42 @@ export async function translateLocal(text: string): Promise<Translation> {
   );
 }
 
+/** Self-trained student SLM served by LM Studio (OpenAI-compatible). One call
+ * replaces the two-stage PLaMo+Shisa pipeline. */
+export async function translateStudent(text: string): Promise<Translation> {
+  const res = await fetch(`${LMSTUDIO_URL}/chat/completions`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    signal: AbortSignal.timeout(120_000),
+    body: JSON.stringify({
+      model: MODEL_STUDENT,
+      stream: false,
+      temperature: 0,
+      max_tokens: 1024,
+      messages: [
+        { role: 'system', content: STUDENT_SYSTEM },
+        { role: 'user', content: text }
+      ]
+    })
+  });
+  if (!res.ok) throw new Error(`lmstudio chat failed: ${res.status}`);
+  const data = (await res.json()) as {
+    choices: Array<{ message: { content?: string; reasoning_content?: string } }>;
+  };
+  const msg = data.choices[0]?.message ?? {};
+  const raw = (msg.content ?? '').trim() || (msg.reasoning_content ?? '').trim();
+  // Lenient extraction: no grammar constraint server-side (it stalls gemma-family
+  // models in LM Studio), so tolerate stray text around the JSON.
+  const start = raw.indexOf('{');
+  const end = raw.lastIndexOf('}');
+  if (start === -1 || end <= start) throw new Error('student returned no JSON');
+  const parsed = JSON.parse(raw.slice(start, end + 1)) as Partial<Translation>;
+  if (typeof parsed.literal !== 'string' || typeof parsed.practical !== 'string') {
+    throw new Error('student JSON missing literal/practical');
+  }
+  return { literal: parsed.literal, practical: parsed.practical };
+}
+
 let anthropic: Anthropic | null = null;
 
 export async function translateCloud(text: string): Promise<Translation> {
@@ -103,7 +148,9 @@ export async function translateCloud(text: string): Promise<Translation> {
 
 export function translate(text: string): Promise<Translation> {
   const backend = process.env.TRANSLATE_BACKEND ?? 'ollama';
-  return backend === 'anthropic' ? translateCloud(text) : translateLocal(text);
+  if (backend === 'anthropic') return translateCloud(text);
+  if (backend === 'lmstudio') return translateStudent(text);
+  return translateLocal(text);
 }
 
 export function activeBackend(): 'local' | 'cloud' {
