@@ -122,6 +122,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 - **Local-first SQLite, sync as premium** (2026-07-18): aligns the architecture with the privacy promise and makes the free tier robust; sync becomes a clean premium value instead of a tax.
 - **Bundled dictionary SQLite** (2026-07-18): offline dictionary is table stakes for the "living here" use case (basements, subways, no signal at the ward office).
 - **RevenueCat over hand-rolled StoreKit + Stripe** (2026-07-18): one entitlement model across iOS/web, webhook-driven, worth the fee at our scale.
+- **Local SLM for free-tier translation; Claude for premium** (2026-07-18): bake-off on real "living in Japan" inputs (pension letter, casual business chat, shop sign) on an RTX 5090 via Ollama. PLaMo-2-translate (PFN, 10B translation specialist) was the only model to correctly translate 「納期ちょっと巻きで」 (deadline *earlier*, not extended) and 「持ち帰り」 (take back to consider, not take home); Gemma4 12B, Shisa V2.1 8B (MIT, fast, clean JSON), and Qwen3 14B (Apache) all inverted 「巻きで」. Plan: PLaMo (or PFN's plamo API) as the translation engine + a small instruct SLM for the practical-explanation JSON layer grounded on PLaMo's output; kuromoji does segmentation/furigana deterministically. **Caveat: PLaMo community license requires a commercial-use agreement with PFN** (application pending, see workspace memory); Shisa 8B is the license-clean fallback engine. This also strengthens the privacy story: free-tier text hits our self-hosted model, not a third-party API.
 
 ---
 
@@ -131,7 +132,7 @@ Extends `obsurdian/knowledgebase/principles/coding.md`. Project-specific:
 
 ## Now / In Progress
 
-- [ ] **T10 — Paste/type translate flow** (next up): text in -> segmented result view (kanji + furigana ruby + romaji + literal + practical) via API (kuromoji segmentation + Claude practical translation). The result view component is shared by OCR flow later. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
+- [ ] **T10 — Paste/type translate flow** (next up): text in -> segmented result view (kanji + furigana ruby + romaji + literal + practical) via API. Pipeline: kuromoji segmentation/furigana (deterministic, no LLM) + **local SLM translation** (see 2026-07-18 bake-off decision: PLaMo-2-translate for the translation, small instruct SLM for the practical/JSON layer grounded on it; Claude stays the premium path). Bench harness: `apps/api/bench/translate-slm-bakeoff.ts`. The result view component is shared by OCR flow later. · [spec](SPEC.md#translate-ocr-photo--live-planned) · `Added: 2026-07-18`
 
 ## Backlog / Planned
 
