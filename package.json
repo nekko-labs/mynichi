@@ -14,6 +14,7 @@
         "dev:android": "turbo dev:android",
         "dev:api": "turbo dev:api",
         "build:web": "turbo build:web",
+        "build:site": "turbo build:web build:marketing && node scripts/build-site.mjs",
         "lint": "turbo lint",
         "test": "bun test"
     },

@@ -90,12 +90,24 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - **Premium**: higher-quality cloud model (same privacy promise) + cloud sync across devices. $20/month, or $14/month billed annually ($168/year). [planned]
 - Native IAP on iOS, card billing on web; one subscription works everywhere. [planned]
 
+### Marketing site (mynichi.app) [shipped]
+- Interactive marketing landing at the root of mynichi.app; the web app itself lives at mynichi.app/app/ (old tab URLs redirect). [shipped]
+- Sells by showing: every distinct feature has a live in-page demo rather than screenshots. [shipped]
+  - Translate demo with three real-life samples (work chat 巻きで, pension letter, door sign) rendering the four layers (furigana ruby, romaji, literal, practical) from real pipeline outputs, plus tap-a-word-to-save. [shipped]
+  - Dictionary demo on real KanjiVG data: stroke-order animation, a draw-it-yourself board with per-stroke judgment (order, direction, shape), and the 未/末 confusables view with differing strokes highlighted. [shipped]
+  - Lists demo: five-second capture with auto-enrichment, then an SRS card flip with grading. [shipped]
+  - AI Practice demo: the scripted dentist call with the cloud/on-device privacy chooser and list-word injection, fronted by the "too embarrassed?" hook. [shipped]
+- The real app embedded live in a phone frame ("this is not a mockup"). [shipped]
+- Honest comparison pages at /vs/duolingo, /vs/anki, /vs/google-translate, /vs/jisho (plus a tabbed section on the landing): what each tool is good at, where life in Japan needs more, feature-by-feature ○/△/✕ table. [shipped]
+- Pricing section (free vs premium with monthly/yearly toggle) and a download section: App Store badge routes to a TestFlight-notify flow until the store listing exists, web app CTA works today. [shipped]
+- Sketchbook design language shared with the app (paper/ink/dark tokens, Klee One + Zen Kaku Gothic New, marker-stroke underlines), plus ink-fog hero, smooth scrolling, scroll reveals. KanjiVG/EDRDG attribution in the footer. [shipped]
+
 ### Multi-language UI [planned]
 - UI + translation target languages at launch: English, German, Chinese, Spanish, Portuguese, French, Italian, Tagalog, Thai, Korean. Set in Settings; defaults to device locale. [planned]
 
 ### Platforms [planned]
 - **Native iOS app first** (App Store), then Android. [planned]
-- Web app (mobile + desktop responsive) at mynichi.app, sharing the same codebase. [planned]
+- Web app (mobile + desktop responsive) at mynichi.app/app/, sharing the same codebase; the mynichi.app root is the marketing site. [shipped]
 
 ## Scope Boundaries
 

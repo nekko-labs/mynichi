@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "bunx",
+      "runtimeArgs": ["serve", "-l", "4330", "dist"],
+      "port": 4330
+    },
+    {
+      "name": "web-marketing-dev",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "--cwd", "apps/web", "dev"],
+      "port": 4320
+    }
+  ]
+}

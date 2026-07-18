@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "installCommand": "bun install",
-  "buildCommand": "bun run build:web",
-  "outputDirectory": "apps/native/dist"
+  "buildCommand": "bun run build:site",
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/lists", "destination": "/app/lists", "permanent": false },
+    { "source": "/dictionary", "destination": "/app/dictionary", "permanent": false },
+    { "source": "/practice", "destination": "/app/practice", "permanent": false },
+    { "source": "/settings", "destination": "/app/settings", "permanent": false }
+  ]
 }
