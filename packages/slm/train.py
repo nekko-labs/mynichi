@@ -14,7 +14,7 @@ from peft import LoraConfig, get_peft_model
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
-    DataCollatorForLanguageModeling,
+    DataCollatorForSeq2Seq,
     Trainer,
     TrainingArguments,
 )
@@ -71,7 +71,8 @@ def main() -> None:
     model.print_trainable_parameters()
 
     dataset = build_dataset(a.data, tokenizer)
-    collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
+    # Pads input_ids AND the precomputed labels (with -100) to a common length.
+    collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
 
     trainer = Trainer(
         model=model,

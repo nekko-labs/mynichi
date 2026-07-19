@@ -7,6 +7,6 @@
 {"text": "明日のミーティング、リスケでお願いします。", "field": "practical", "must_any": ["reschedul", "move", "change the time", "new time"], "must_not": ["cancel"]}
 {"text": "検診の前日は21時以降の飲食はお控えください。", "field": "practical", "must_any": ["9", "21"], "must_not": []}
 {"text": "不在のためお荷物をお預かりしています。再配達のご依頼は下記QRコードから。", "field": "practical", "must_any": ["redeliver", "re-deliver", "delivery"], "must_not": []}
-{"text": "こちらの商品は税抜価格です。", "field": "practical", "must_any": ["tax", "exclud"], "must_not": ["includ"]}
+{"text": "こちらの商品は税抜価格です。", "field": "practical", "must_any": ["not include tax", "excludes tax", "excluding tax", "before tax", "plus tax", "tax will be added", "tax not included"], "must_not": []}
 {"text": "会議の資料、前倒しで金曜までにお願いします。", "field": "practical", "must_any": ["earlier", "moved up", "friday", "ahead of schedule"], "must_not": ["postpon", "delay"]}
 {"text": "エレベーター点検のため、下記時間帯は階段をご利用ください。", "field": "practical", "must_any": ["stairs", "elevator"], "must_not": []}
