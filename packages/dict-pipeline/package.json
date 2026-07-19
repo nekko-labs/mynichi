@@ -1,0 +1,10 @@
+{
+    "name": "@mynichi/dict-pipeline",
+    "version": "0.1.0",
+    "description": "Builds a compact common-words JA-EN dictionary JSON from jmdict-simplified",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "bun run src/build-common.ts"
+    }
+}

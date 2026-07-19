@@ -15,21 +15,24 @@ import { StatusBar } from 'expo-status-bar';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     KleeOne_400Regular,
     KleeOne_600SemiBold,
     ZenKakuGothicNew_400Regular,
     ZenKakuGothicNew_500Medium,
     ZenKakuGothicNew_700Bold
   });
+  const ready = fontsLoaded || fontError != null;
 
   useEffect(() => {
-    if (fontsLoaded) {
+    if (ready) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [ready]);
 
-  if (!fontsLoaded) {
+  // Render with fallback fonts rather than a blank screen if font loading
+  // fails (e.g. offline first launch on web).
+  if (!ready) {
     return null;
   }
 
