@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "app-dev",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "--cwd", "apps/native", "dev:web"],
+      "port": 4310
+    },
+    {
       "name": "site",
       "runtimeExecutable": "bunx",
       "runtimeArgs": ["serve", "-l", "4330", "dist"],

@@ -1,10 +1,11 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { TranslateRequestSchema, type TranslateResponse } from '@mynichi/core';
+import { PracticeRequestSchema, TranslateRequestSchema, type TranslateResponse } from '@mynichi/core';
 
 import { segment, warmTokenizer } from './translate/segment';
 import { activeBackend, translate } from './translate/backends';
+import { practiceTurn } from './practice';
 
 const app = new Hono();
 
@@ -33,6 +34,19 @@ app.post('/translate', async (c) => {
     backend: activeBackend()
   };
   return c.json(response);
+});
+
+app.post('/practice', async (c) => {
+  const parsed = PracticeRequestSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) {
+    return c.json({ error: 'scenario is required (1-300 chars)' }, 400);
+  }
+  try {
+    return c.json(await practiceTurn(parsed.data));
+  } catch (err) {
+    console.error('practice turn failed:', err);
+    return c.json({ error: 'The practice partner is unavailable right now.' }, 502);
+  }
 });
 
 const port = Number(process.env.PORT ?? 4300);

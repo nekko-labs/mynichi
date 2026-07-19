@@ -1,6 +1,6 @@
 ---
 status: active
-last-updated: 2026-07-18
+last-updated: 2026-07-19
 owner: Philip
 ---
 
@@ -59,31 +59,34 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Copy any layer; tap any word/phrase to add it to a practice list or open it in the dictionary. [planned]
 - Live camera translate mode (Google Translate style overlay). [planned, after still-photo flow]
 
-### Practice Lists [planned]
-- Create lists organized by life category (life admin, work, real estate, health, tech, food, travel, ...); custom categories supported. [planned]
-- Quick-add in seconds: type a word/phrase you heard and the app enriches it (reading, furigana, meaning, example). Designed for "someone just said this" capture. [planned]
-- Items can be kanji, words, phrases, or grammar points. [planned]
-- Spaced-repetition review (Anki-style) per list or across lists. [planned]
+### Practice Lists [in progress]
+- Create lists organized by life category (life admin, work, real estate, health, tech, food, travel, ...); custom categories supported. [shipped]
+- Quick-add in seconds: type a word/phrase you heard and the app enriches it (reading, furigana, meaning, example) from the offline dictionary, with manual fields as fallback. [shipped; Claude-backed enrichment for rarer words planned]
+- Items can be kanji, words, phrases, or grammar points (kind auto-guessed on capture). [shipped]
+- Items and review state live on-device (local-first); nothing leaves the phone. [shipped]
+- Spaced-repetition review (Anki-style) per list: card flip with furigana, Again/Hard/Good/Easy grading, due counts on every list. [shipped; cross-list review planned]
 - **Stroke-order practice** as a first-class part of spaced repetition for kanji items. [planned]
   - Guided trace mode: the kanji is shown faintly with stroke-order cues; you trace it correctly. [planned]
   - Blind recall mode: nothing is shown; you draw the kanji from memory and the app responds **stroke by stroke** (correct, wrong order, wrong direction, malformed shape) with gentle nudges or a reveal-next-stroke hint. [planned]
   - Writing performance feeds the SRS schedule alongside recognition (a kanji you can read but not write stays in rotation). [planned]
 - Items link back to their source (photo translation, dictionary lookup) when they came from one. [planned]
 
-### Dictionary [planned]
-- Lookup by Japanese (kana/kanji/romaji) or English meaning. [planned]
+### Dictionary [in progress]
+- Lookup by Japanese (kana/kanji/romaji) or English meaning, fully offline over a bundled starter dictionary of ~22,600 common JMdict words; one-tap add to a practice list. [shipped]
+- Full offline dictionary (complete JMdict + kanji data as bundled SQLite) replacing the starter set. [planned]
 - **Draw the kanji** with your finger to find it (handwriting recognition). [planned]
 - Radical picker to build up a kanji from parts. [planned]
 - Entry view: readings, meanings, stroke order animation, common compounds, example sentences, JLPT/frequency info. [planned]
 - **Confusables**: similar-looking kanji shown side by side with the differing components color-highlighted. [planned]
 - One-tap add to a practice list. [planned]
 
-### AI Practice [planned]
-- Privacy-first framing, shown before first use: choose **our cloud model** (no training on your data, voice never stored) or a **local offline model** on capable devices (Apple Intelligence; minimum specs listed in-app: iPhone 15 Pro / A17 Pro or later, iOS 18+). [planned]
-- Practice a scenario by typing/speaking it freely, or pick from category-based scenario presets (dentist call, apartment viewing, izakaya order, ...). [planned]
-- Select specific items or whole practice lists to weave into the conversation. [planned]
-- A visual AI character (illustrated, on-brand) you can talk to, voice or text, turn-based. [planned]
-- Marketing/onboarding hook: "Too embarrassed to practice in front of another person?" [planned]
+### AI Practice [in progress]
+- Privacy-first framing, shown before first use: choose **our cloud model** (no training on your data, voice never stored) or a **local offline model** on capable devices (Apple Intelligence; minimum specs listed in-app: iPhone 15 Pro / A17 Pro or later, iOS 18+; arrives with the iOS app). [shipped]
+- Practice a scenario by typing it freely, or pick from scenario presets (dentist call, ward office, izakaya order, apartment viewing, konbini, work small talk). [shipped; speaking the scenario planned]
+- Select a practice list to weave its words into the conversation. [shipped]
+- Turn-based text chat: the partner replies in short natural Japanese with an English gloss, gentle corrections, and a "try saying this" hint chip. Cloud turns run Claude behind our API. [shipped; live in prod once the API is hosted]
+- A visual AI character (illustrated, on-brand) with listening/thinking/speaking states; voice mode. [planned]
+- Marketing/onboarding hook: "Too embarrassed to practice in front of another person?" [shipped]
 
 ### Plans & Billing [planned]
 - **Free**: translate, lists, dictionary, local AI practice. [planned]
@@ -101,6 +104,11 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Honest comparison pages at /vs/duolingo, /vs/anki, /vs/google-translate, /vs/jisho (plus a tabbed section on the landing): what each tool is good at, where life in Japan needs more, feature-by-feature ○/△/✕ table. [shipped]
 - Pricing section (free vs premium with monthly/yearly toggle) and a download section: App Store badge routes to a TestFlight-notify flow until the store listing exists, web app CTA works today. [shipped]
 - Sketchbook design language shared with the app (paper/ink/dark tokens, Klee One + Zen Kaku Gothic New, marker-stroke underlines), plus ink-fog hero, smooth scrolling, scroll reveals. KanjiVG/EDRDG attribution in the footer. [shipped]
+
+### App shell & navigation [shipped]
+- Full-height app shell with a custom bottom tab bar: one kanji per feature (訳帳辞話設), colored with the feature accent when active, English label beneath; correct in light and dark mode. [shipped]
+- Every screen shares the sketchbook scaffold: kana reading over a big Klee One heading with an accent brush stroke, scrollable body, safe-area aware, back navigation on pushed screens. [shipped]
+- Settings is a real screen: language preview, appearance note, privacy promises, dictionary licence attribution (EDRDG/JMdict, KanjiVG), version, feedback link. [shipped]
 
 ### Multi-language UI [planned]
 - UI + translation target languages at launch: English, German, Chinese, Spanish, Portuguese, French, Italian, Tagalog, Thai, Korean. Set in Settings; defaults to device locale. [planned]

@@ -1,10 +1,11 @@
-html,
-body {
-  height: initial;
-}
+/*
+ * The app is a full-height shell (expo-reset sets html/body/#root to 100% and
+ * hides body overflow); each screen scrolls its own content area. Do NOT
+ * override height here: `height: initial` collapses #root to 0 and the tab
+ * bar floats to the top of the page.
+ */
 
 body {
-  overflow: auto;
   background-color: #faf7f0;
 }
 
