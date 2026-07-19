@@ -10,6 +10,8 @@ STUDENT_SYSTEM = (
     '"practical": "what it actually means for the reader, including what to do if it implies an action"}'
 )
 
+# Server-class student default; pass --base-model to train/eval for others
+# (e.g. the phone-class student picked by the kotrain research run).
 BASE_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
 
 

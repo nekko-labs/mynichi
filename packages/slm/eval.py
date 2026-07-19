@@ -21,12 +21,12 @@ from common import BASE_MODEL, to_messages
 MAX_NEW = 512
 
 
-def load_hf_generator(adapter: str | None):
+def load_hf_generator(adapter: str | None, base_model: str = BASE_MODEL):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
-    model = AutoModelForCausalLM.from_pretrained(BASE_MODEL, torch_dtype=torch.bfloat16, device_map="cuda")
+    tokenizer = AutoTokenizer.from_pretrained(base_model)
+    model = AutoModelForCausalLM.from_pretrained(base_model, torch_dtype=torch.bfloat16, device_map="cuda")
     if adapter:
         from peft import PeftModel
 
@@ -83,6 +83,7 @@ def main() -> None:
     p.add_argument("--base-only", action="store_true")
     p.add_argument("--api-model")
     p.add_argument("--api-url", default="http://127.0.0.1:1338/v1")
+    p.add_argument("--base-model", default=BASE_MODEL)
     p.add_argument("--cases", type=Path, default=Path("eval_cases.jsonl"))
     p.add_argument("--heldout", type=Path, default=Path("data/heldout.jsonl"))
     p.add_argument("--max-heldout", type=int, default=80)
@@ -91,7 +92,7 @@ def main() -> None:
     if a.api_model:
         generate = load_api_generator(a.api_model, a.api_url)
     else:
-        generate = load_hf_generator(None if a.base_only else a.adapter)
+        generate = load_hf_generator(None if a.base_only else a.adapter, a.base_model)
 
     total, valid = 0, 0
 

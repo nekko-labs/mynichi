@@ -51,10 +51,11 @@ def main() -> None:
     p.add_argument("--batch", type=int, default=2)
     p.add_argument("--grad-accum", type=int, default=8)
     p.add_argument("--max-steps", type=int, default=-1)  # >0 = smoke test
+    p.add_argument("--base-model", default=BASE_MODEL)
     a = p.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
-    model = AutoModelForCausalLM.from_pretrained(BASE_MODEL, torch_dtype=torch.bfloat16, device_map="cuda")
+    tokenizer = AutoTokenizer.from_pretrained(a.base_model)
+    model = AutoModelForCausalLM.from_pretrained(a.base_model, torch_dtype=torch.bfloat16, device_map="cuda")
     model.config.use_cache = False
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
