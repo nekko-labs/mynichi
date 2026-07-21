@@ -1,0 +1,8 @@
+.venv/
+data/
+runs/
+models/
+__pycache__/
+convert_hf_to_gguf.py
+*-merged/
+*.gguf

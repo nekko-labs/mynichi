@@ -55,7 +55,7 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Paste or type Japanese text and translate it. [shipped]
 - Results view shows: original text (kanji), furigana over the kanji runs, romaji pronunciation, literal English translation, and a practical translation ("what it really means / what to do"). [shipped]
 - Take a photo or pick an existing photo; OCR extracts the Japanese and feeds the same results view. [planned]
-- Privacy-respecting model policy: free-tier translation runs on models we host ourselves (no third-party API sees your text); premium uses a frontier model with the same no-training promise. [planned]
+- Privacy-respecting model policy: free-tier translation runs on a model we trained and host ourselves (a compact, license-clean SLM; no third-party API sees your text); premium uses a frontier model with the same no-training promise. The free-tier model is tuned so idiom-heavy resident Japanese lands correctly (e.g. 「納期ちょっと巻きで」 = bring the deadline *earlier*, never *extend* it). [free-tier engine built; wired into the API]
 - Copy any layer; tap any word/phrase to add it to a practice list or open it in the dictionary. [planned]
 - Live camera translate mode (Google Translate style overlay). [planned, after still-photo flow]
 
