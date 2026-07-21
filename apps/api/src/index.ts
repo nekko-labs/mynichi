@@ -1,11 +1,17 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { PracticeRequestSchema, TranslateRequestSchema, type TranslateResponse } from '@mynichi/core';
+import {
+  EnrichRequestSchema,
+  PracticeRequestSchema,
+  TranslateRequestSchema,
+  type TranslateResponse
+} from '@mynichi/core';
 
 import { segment, warmTokenizer } from './translate/segment';
 import { activeBackend, translate } from './translate/backends';
 import { practiceTurn } from './practice';
+import { enrich } from './enrich';
 
 const app = new Hono();
 
@@ -34,6 +40,19 @@ app.post('/translate', async (c) => {
     backend: activeBackend()
   };
   return c.json(response);
+});
+
+app.post('/enrich', async (c) => {
+  const parsed = EnrichRequestSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) {
+    return c.json({ error: 'text is required (1-80 chars)' }, 400);
+  }
+  try {
+    return c.json(await enrich(parsed.data));
+  } catch (err) {
+    console.error('enrich failed:', err);
+    return c.json({ error: 'Could not enrich this term right now.' }, 502);
+  }
 });
 
 app.post('/practice', async (c) => {

@@ -6,7 +6,7 @@ import type { SrsState } from './srs';
 
 export type ItemKind = 'word' | 'kanji' | 'phrase' | 'grammar';
 
-export type ItemSource = 'manual' | 'dictionary' | 'translation';
+export type ItemSource = 'manual' | 'dictionary' | 'translation' | 'enriched';
 
 export type ListItem = {
   id: string;

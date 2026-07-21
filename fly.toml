@@ -1,0 +1,39 @@
+# Fly.io config for the mynichi API (apps/api: translate / enrich / practice).
+#
+# First-time setup (from the repo root, with flyctl authenticated):
+#   fly apps create mynichi-api                 # or `fly launch --no-deploy`
+#   fly secrets set ANTHROPIC_API_KEY=sk-ant-...   # unlocks translate + enrich meaning + practice
+#   fly deploy
+#
+# Then point the app at it: attach the custom domain
+#   fly certs add api.mynichi.app     (+ a CNAME api -> mynichi-api.fly.dev)
+# which matches PROD_API_URL in apps/native/src/lib/api.ts. Until DNS is live,
+# build the web app with EXPO_PUBLIC_API_URL=https://mynichi-api.fly.dev instead.
+
+app = "mynichi-api"
+primary_region = "nrt" # Tokyo — closest to the Japan-resident audience
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  TRANSLATE_BACKEND = "anthropic"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb" # headroom for the kuromoji dictionary loaded at startup

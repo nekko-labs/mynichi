@@ -2,6 +2,7 @@
 // Fills out as features land: srs/ (FSRS), api/ (typed client).
 
 export * from './translate';
+export * from './enrich';
 export * from './jp';
 export * from './srs';
 export * from './lists';

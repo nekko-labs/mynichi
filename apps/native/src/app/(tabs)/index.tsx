@@ -5,10 +5,8 @@ import type { TranslateResponse } from '@mynichi/core';
 import { RubyText } from '@/components/ruby-text';
 import { Screen } from '@/components/screen';
 import { Button, Chip, Label } from '@/components/ui';
+import { translateText } from '@/lib/api';
 import { colors, text } from '../../theme/tokens.css';
-
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ?? (__DEV__ ? 'http://localhost:4300' : undefined);
 
 const SAMPLES = [
   { label: 'Work chat', text: '納期ちょっと巻きでお願いします' },
@@ -29,22 +27,9 @@ export default function TranslateScreen() {
   async function translate(raw: string) {
     const trimmed = raw.trim();
     if (!trimmed || state.kind === 'loading') return;
-    if (!API_URL) {
-      setState({
-        kind: 'error',
-        message: 'The translate engine is not connected to this build yet. It is coming soon.'
-      });
-      return;
-    }
     setState({ kind: 'loading' });
     try {
-      const res = await fetch(`${API_URL}/translate`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text: trimmed })
-      });
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      setState({ kind: 'result', data: (await res.json()) as TranslateResponse });
+      setState({ kind: 'result', data: await translateText(trimmed) });
     } catch {
       setState({
         kind: 'error',
@@ -61,6 +46,12 @@ export default function TranslateScreen() {
         value={input}
         rows={3}
         onChange={(e: { target: { value: string } }) => setInput(e.target.value)}
+        onKeyDown={(e: { key: string; metaKey?: boolean; ctrlKey?: boolean; preventDefault?: () => void }) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault?.();
+            translate(input);
+          }
+        }}
       />
       <html.div style={styles.actionRow}>
         <Button
