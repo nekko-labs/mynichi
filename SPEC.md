@@ -61,7 +61,7 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 
 ### Practice Lists [in progress]
 - Create lists organized by life category (life admin, work, real estate, health, tech, food, travel, ...); custom categories supported. [shipped]
-- Quick-add in seconds: type a word/phrase you heard and the app enriches it (reading, furigana, meaning, example) from the offline dictionary, with manual fields as fallback. [shipped; Claude-backed enrichment for rarer words planned]
+- Quick-add in seconds: type the Japanese and the reading, furigana, meaning, and an example sentence fill themselves in. Instant and offline from the bundled dictionary for common words; for words it misses (e.g. 納期) the app auto-enriches from the API (`/enrich`: reading + furigana via kuromoji, meaning + example via Claude). Romaji typed into the reading field converts to kana live, and every field stays editable. Manual entry is the offline fallback when neither the dictionary nor the API can help. [shipped]
 - Items can be kanji, words, phrases, or grammar points (kind auto-guessed on capture). [shipped]
 - Items and review state live on-device (local-first); nothing leaves the phone. [shipped]
 - Spaced-repetition review (Anki-style) per list: card flip with furigana, Again/Hard/Good/Easy grading, due counts on every list. [shipped; cross-list review planned]

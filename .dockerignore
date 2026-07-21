@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+dist
+apps/native/dist
+apps/web/dist
+.turbo
+.vercel
+.expo
+.git
+.env
+.env.*
+packages/slm
+**/*.tsbuildinfo
