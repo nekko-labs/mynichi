@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { css, html } from 'react-strict-dom';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { toHiragana } from 'wanakana';
-import { CATEGORY_META, fitFurigana, type ItemKind, type ItemSource, hasKanji } from '@mynichi/core';
+import {
+  CATEGORY_META,
+  fitFurigana,
+  katakanaToHiragana,
+  type ItemKind,
+  type ItemSource,
+  hasKanji
+} from '@mynichi/core';
 
 import { Screen } from '@/components/screen';
 import { Button, Card, EmptyState, Label } from '@/components/ui';
-import { loadDict, lookupExact } from '@/dict';
+import { loadDict, lookupExact, searchDict, type DictWord } from '@/dict';
 import { enrichTerm } from '@/lib/api';
 import { addItem, deleteItem, deleteList, useListsDoc } from '@/store/lists';
 import { colors, text } from '../../theme/tokens.css';
@@ -55,7 +62,54 @@ export default function ListDetailScreen() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [suggestions, setSuggestions] = useState<DictWord[]>([]);
+  const [flash, setFlash] = useState<string | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flashRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const now = Date.now();
+
+  useEffect(
+    () => () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (flashRef.current) clearTimeout(flashRef.current);
+    },
+    []
+  );
+
+  // Search-as-you-type: partial English, romaji, kana, or kanji pulls up
+  // dictionary candidates so most words are one tap away.
+  function onCapture(value: string) {
+    setCapture(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const trimmed = value.trim();
+    if (!trimmed) {
+      setSuggestions([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const dict = await loadDict();
+        setSuggestions(searchDict(dict, trimmed, 6));
+      } catch {
+        setSuggestions([]);
+      }
+    }, 140);
+  }
+
+  function addSuggestion(w: DictWord) {
+    if (!list) return;
+    const surface = w.k ?? w.r;
+    addItem(list.id, {
+      kind: w.k && [...w.k].length === 1 ? 'kanji' : 'word',
+      text: surface,
+      reading: w.k ? katakanaToHiragana(w.r) : undefined,
+      meaning: w.g.slice(0, 3).join('; '),
+      source: 'dictionary'
+    });
+    setFlash(surface);
+    if (flashRef.current) clearTimeout(flashRef.current);
+    flashRef.current = setTimeout(() => setFlash(null), 1800);
+  }
 
   if (!list) {
     return (
@@ -126,6 +180,7 @@ export default function ListDetailScreen() {
     });
     setDraft(null);
     setCapture('');
+    setSuggestions([]);
   }
 
   function removeList() {
@@ -156,22 +211,58 @@ export default function ListDetailScreen() {
     >
       {/* Quick capture: type it now, keep moving. */}
       {draft === null ? (
-        <html.div style={styles.captureRow}>
-          <html.input
-            style={styles.captureInput}
-            placeholder="Word you just heard… 例: 納期"
-            value={capture}
-            onChange={(e: { target: { value: string } }) => setCapture(e.target.value)}
-            onKeyDown={(e: { key: string }) => {
-              if (e.key === 'Enter') startDraft();
-            }}
-          />
-          <Button
-            label={busy ? '…' : 'Add'}
-            accent={colors.matcha}
-            onClick={startDraft}
-            disabled={!capture.trim() || busy}
-          />
+        <html.div style={styles.captureBlock}>
+          <html.div style={styles.captureRow}>
+            <html.input
+              style={styles.captureInput}
+              placeholder="Search or type… 例: nouki / deadline / 納期"
+              value={capture}
+              onChange={(e: { target: { value: string } }) => onCapture(e.target.value)}
+              onKeyDown={(e: { key: string }) => {
+                if (e.key === 'Enter') startDraft();
+              }}
+            />
+            <Button
+              label={busy ? '…' : 'Add'}
+              accent={colors.matcha}
+              onClick={startDraft}
+              disabled={!capture.trim() || busy}
+            />
+          </html.div>
+
+          {flash ? (
+            <html.span style={styles.flashNote}>「{flash}」 added to the list ✓</html.span>
+          ) : null}
+
+          {capture.trim() && suggestions.length > 0 ? (
+            <html.div style={styles.suggestions}>
+              {suggestions.map((w) => (
+                <html.button
+                  key={w.s}
+                  style={styles.suggestion}
+                  onClick={() => addSuggestion(w)}
+                >
+                  <html.div style={styles.suggestionBody}>
+                    <html.div style={styles.suggestionWordRow}>
+                      <html.span style={styles.suggestionWord}>{w.k ?? w.r}</html.span>
+                      {w.k ? (
+                        <html.span style={styles.suggestionKana}>
+                          {katakanaToHiragana(w.r)}
+                        </html.span>
+                      ) : null}
+                    </html.div>
+                    <html.span style={styles.suggestionGloss}>
+                      {w.g.slice(0, 3).join('; ')}
+                    </html.span>
+                  </html.div>
+                  <html.span style={styles.suggestionAdd}>＋</html.span>
+                </html.button>
+              ))}
+              <html.span style={styles.suggestionHint}>
+                Tap a match to add it, or press Add to capture 「{capture.trim()}」 as written.
+              </html.span>
+            </html.div>
+          ) : null}
         </html.div>
       ) : (
         <Card tint={colors.matchaSoft}>
@@ -262,11 +353,79 @@ export default function ListDetailScreen() {
 }
 
 const styles = css.create({
+  captureBlock: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
   captureRow: {
     display: 'flex',
     flexDirection: 'row',
     columnGap: 10,
     alignItems: 'stretch'
+  },
+  flashNote: {
+    fontFamily: text.bodyMedium,
+    fontSize: 13,
+    color: colors.matcha,
+    marginTop: 8
+  },
+  suggestions: {
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: 6,
+    marginTop: 10
+  },
+  suggestion: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.paperLift,
+    borderRadius: 12,
+    borderStyle: 'none',
+    borderWidth: 0,
+    padding: 12,
+    cursor: 'pointer',
+    textAlign: 'start'
+  },
+  suggestionBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1
+  },
+  suggestionWordRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    columnGap: 8
+  },
+  suggestionWord: {
+    fontFamily: text.bodyBold,
+    fontSize: 18,
+    color: colors.ink
+  },
+  suggestionKana: {
+    fontFamily: text.body,
+    fontSize: 13,
+    color: colors.inkSoft
+  },
+  suggestionGloss: {
+    fontFamily: text.body,
+    fontSize: 13,
+    color: colors.inkSoft,
+    marginTop: 1
+  },
+  suggestionAdd: {
+    fontFamily: text.bodyBold,
+    fontSize: 20,
+    color: colors.matcha,
+    paddingLeft: 12
+  },
+  suggestionHint: {
+    fontFamily: text.body,
+    fontSize: 12,
+    color: colors.inkSoft,
+    opacity: 0.8,
+    marginTop: 2
   },
   captureInput: {
     fontFamily: text.body,

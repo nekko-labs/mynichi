@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Scroll } from './scroll';
+import { RAIL_WIDTH, useWideLayout } from '../lib/layout';
 import { colors, text } from '../theme/tokens.css';
 
 type Props = {
@@ -23,11 +24,14 @@ type Props = {
 export function Screen({ reading, kanji, title, accent, back, action, children }: Props) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const wide = useWideLayout();
 
   return (
-    <html.div style={styles.screen}>
+    <html.div style={[styles.screen, wide && styles.screenPadLeft(RAIL_WIDTH)]}>
       <Scroll>
-        <html.div style={[styles.inner, styles.inset(insets.top + 20)]}>
+        <html.div
+          style={[styles.inner, wide && styles.innerWide, styles.inset(insets.top + (wide ? 36 : 20))]}
+        >
           {back ? (
             <html.button
               style={styles.back}
@@ -63,6 +67,7 @@ const styles = css.create({
     minHeight: 0,
     backgroundColor: colors.paper
   },
+  screenPadLeft: (w: number) => ({ paddingLeft: w }),
   inner: {
     display: 'flex',
     flexDirection: 'column',
@@ -74,6 +79,11 @@ const styles = css.create({
     maxWidth: 640,
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  innerWide: {
+    maxWidth: 1000,
+    paddingLeft: 40,
+    paddingRight: 40
   },
   inset: (top: number) => ({ paddingTop: top }),
   back: {

@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { css, html } from 'react-strict-dom';
 import { katakanaToHiragana } from '@mynichi/core';
 
+import { ListPicker } from '@/components/list-picker';
 import { Screen } from '@/components/screen';
-import { Card, Chip, EmptyState, Label } from '@/components/ui';
+import { Card, EmptyState } from '@/components/ui';
 import { loadDict, posLabel, searchDict, type Dict, type DictWord } from '@/dict';
-import { addItem, useListsDoc } from '@/store/lists';
+import { useWideLayout } from '@/lib/layout';
+import { addItem } from '@/store/lists';
 import { colors, text } from '../../theme/tokens.css';
 
 type DictState = 'idle' | 'loading' | 'ready' | 'error';
@@ -18,7 +20,7 @@ export default function DictionaryScreen() {
   const [savedTo, setSavedTo] = useState<Record<number, string>>({});
   const dictRef = useRef<Dict | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const doc = useListsDoc();
+  const wide = useWideLayout();
 
   async function ensureDict(): Promise<Dict | null> {
     if (dictRef.current) return dictRef.current;
@@ -94,12 +96,13 @@ export default function DictionaryScreen() {
           hint="This starter dictionary covers common words. Rarer entries arrive with the full offline dictionary."
         />
       ) : (
-        <html.div style={styles.results}>
+        <html.div style={[styles.results, wide && styles.resultsWide]}>
           {results.map((w) => {
             const open = openId === w.s;
             const saved = savedTo[w.s];
             return (
-              <Card key={w.s} onClick={open ? undefined : () => setOpenId(w.s)}>
+              <html.div key={w.s} style={wide ? styles.cellWide : styles.cell}>
+              <Card onClick={open ? undefined : () => setOpenId(w.s)}>
                 <html.div style={styles.resultRow}>
                   <html.div style={styles.resultBody}>
                     <html.div style={styles.wordRow}>
@@ -117,28 +120,17 @@ export default function DictionaryScreen() {
                   <html.div style={styles.addBlock}>
                     {saved ? (
                       <html.span style={styles.savedNote}>Saved to “{saved}”</html.span>
-                    ) : doc.lists.length > 0 ? (
-                      <>
-                        <Label>Add to a list</Label>
-                        <html.div style={styles.listChips}>
-                          {doc.lists.map((l) => (
-                            <Chip
-                              key={l.id}
-                              label={l.name}
-                              tint={colors.yuzuSoft}
-                              onClick={() => saveToList(w, l.id, l.name)}
-                            />
-                          ))}
-                        </html.div>
-                      </>
                     ) : (
-                      <html.span style={styles.savedNote}>
-                        Create a list in the Lists tab to save words.
-                      </html.span>
+                      <ListPicker
+                        tint={colors.yuzuSoft}
+                        accent={colors.yuzu}
+                        onPick={(listId, listName) => saveToList(w, listId, listName)}
+                      />
                     )}
                   </html.div>
                 ) : null}
               </Card>
+              </html.div>
             );
           })}
         </html.div>
@@ -179,6 +171,25 @@ const styles = css.create({
     display: 'flex',
     flexDirection: 'column',
     rowGap: 8
+  },
+  resultsWide: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 10
+  },
+  cell: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch'
+  },
+  cellWide: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    flexGrow: 1,
+    flexBasis: '46%',
+    minWidth: 320
   },
   resultRow: {
     display: 'flex',
@@ -223,12 +234,6 @@ const styles = css.create({
     display: 'flex',
     flexDirection: 'column',
     marginTop: 12
-  },
-  listChips: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8
   },
   savedNote: {
     fontFamily: text.bodyMedium,
