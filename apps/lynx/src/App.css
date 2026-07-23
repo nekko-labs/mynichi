@@ -1,0 +1,131 @@
+/* Sketchbook tokens (mirrors apps/native/src/theme): paper, ink, yuzu accent. */
+:root {
+  background-color: #faf7f0;
+}
+
+.Screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 48px 24px 24px;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.Reading {
+  font-size: 14px;
+  color: #6b6575;
+}
+
+.Kanji {
+  font-size: 34px;
+  font-weight: 700;
+  color: #2a2732;
+}
+
+.Brush {
+  height: 6px;
+  width: 64px;
+  border-radius: 3px;
+  margin-top: 5px;
+  background-color: #f2b441;
+  transform: rotate(-1.2deg);
+}
+
+.Search {
+  font-size: 16px;
+  color: #2a2732;
+  background-color: #f1ece1;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  width: 100%;
+  height: 48px;
+}
+
+.Empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 48px;
+}
+
+.EmptyKanji {
+  font-size: 44px;
+  color: #6b6575;
+  opacity: 0.5;
+  margin-bottom: 10px;
+}
+
+.EmptyTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2a2732;
+  margin-bottom: 4px;
+}
+
+.EmptyHint {
+  font-size: 14px;
+  color: #6b6575;
+  text-align: center;
+}
+
+.Results {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.Card {
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f0e6;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 8px;
+}
+
+.WordRow {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.Word {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2a2732;
+  margin-right: 10px;
+}
+
+.Kana {
+  font-size: 14px;
+  color: #6b6575;
+}
+
+.Gloss {
+  font-size: 14px;
+  color: #6b6575;
+  margin-top: 2px;
+}
+
+.Chip {
+  align-self: flex-start;
+  background-color: rgba(242, 180, 65, 0.18);
+  border-radius: 999px;
+  padding: 7px 14px;
+  margin-top: 10px;
+}
+
+.ChipDone {
+  background-color: #7fa65a;
+}
+
+.ChipText {
+  font-size: 14px;
+  color: #2a2732;
+}
