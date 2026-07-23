@@ -6,6 +6,7 @@ import { RubyText } from '@/components/ruby-text';
 import { Screen } from '@/components/screen';
 import { Button, Chip, Label } from '@/components/ui';
 import { translateText } from '@/lib/api';
+import { useWideLayout } from '@/lib/layout';
 import { colors, text } from '../../theme/tokens.css';
 
 const SAMPLES = [
@@ -23,6 +24,7 @@ type State =
 export default function TranslateScreen() {
   const [input, setInput] = useState('');
   const [state, setState] = useState<State>({ kind: 'idle' });
+  const wide = useWideLayout();
 
   async function translate(raw: string) {
     const trimmed = raw.trim();
@@ -92,15 +94,18 @@ export default function TranslateScreen() {
       {state.kind === 'error' ? <html.p style={styles.error}>{state.message}</html.p> : null}
 
       {state.kind === 'result' ? (
-        <html.div style={styles.result}>
-          <RubyText tokens={state.data.tokens} />
-          <html.p style={styles.romaji}>{state.data.romaji}</html.p>
+        <html.div style={[styles.result, wide && styles.resultWide]}>
+          <html.div style={wide ? styles.resultColWide : styles.resultCol}>
+            <RubyText tokens={state.data.tokens} />
+            <html.p style={styles.romaji}>{state.data.romaji}</html.p>
+          </html.div>
+          <html.div style={wide ? styles.resultColWide : styles.resultCol}>
+            <Label color={colors.indigo}>Literal</Label>
+            <html.p style={styles.body}>{state.data.literal}</html.p>
 
-          <Label color={colors.indigo}>Literal</Label>
-          <html.p style={styles.body}>{state.data.literal}</html.p>
-
-          <Label color={colors.indigo}>What it really means</Label>
-          <html.p style={styles.body}>{state.data.practical}</html.p>
+            <Label color={colors.indigo}>What it really means</Label>
+            <html.p style={styles.body}>{state.data.practical}</html.p>
+          </html.div>
         </html.div>
       ) : null}
     </Screen>
@@ -158,6 +163,21 @@ const styles = css.create({
     display: 'flex',
     flexDirection: 'column',
     marginTop: 24
+  },
+  resultWide: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    columnGap: 40
+  },
+  resultCol: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  resultColWide: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    flexBasis: 0
   },
   romaji: {
     fontFamily: text.body,

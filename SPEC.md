@@ -62,6 +62,7 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 ### Practice Lists [in progress]
 - Create lists organized by life category (life admin, work, real estate, health, tech, food, travel, ...); custom categories supported. [shipped]
 - Quick-add in seconds: type the Japanese and the reading, furigana, meaning, and an example sentence fill themselves in. Instant and offline from the bundled dictionary for common words; for words it misses (e.g. 納期) the app auto-enriches from the API (`/enrich`: reading + furigana via kuromoji, meaning + example via Claude). Romaji typed into the reading field converts to kana live, and every field stays editable. Manual entry is the offline fallback when neither the dictionary nor the API can help. [shipped]
+- Search-as-you-type capture: typing part of a word in English, romaji, kana, or kanji into the capture box surfaces matching dictionary words and phrases (word + reading + meaning) that add to the list in one tap; the as-written capture path stays one button away for anything the dictionary misses. [shipped]
 - Items can be kanji, words, phrases, or grammar points (kind auto-guessed on capture). [shipped]
 - Items and review state live on-device (local-first); nothing leaves the phone. [shipped]
 - Spaced-repetition review (Anki-style) per list: card flip with furigana, Again/Hard/Good/Easy grading, due counts on every list. [shipped; cross-list review planned]
@@ -73,12 +74,12 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 
 ### Dictionary [in progress]
 - Lookup by Japanese (kana/kanji/romaji) or English meaning, fully offline over a bundled starter dictionary of ~22,600 common JMdict words; one-tap add to a practice list. [shipped]
+- Save anywhere: an entry can be added to any existing list, or to a brand-new list created inline (name + life category) without leaving the dictionary. [shipped]
 - Full offline dictionary (complete JMdict + kanji data as bundled SQLite) replacing the starter set. [planned]
 - **Draw the kanji** with your finger to find it (handwriting recognition). [planned]
 - Radical picker to build up a kanji from parts. [planned]
 - Entry view: readings, meanings, stroke order animation, common compounds, example sentences, JLPT/frequency info. [planned]
 - **Confusables**: similar-looking kanji shown side by side with the differing components color-highlighted. [planned]
-- One-tap add to a practice list. [planned]
 
 ### AI Practice [in progress]
 - Privacy-first framing, shown before first use: choose **our cloud model** (no training on your data, voice never stored) or a **local offline model** on capable devices (Apple Intelligence; minimum specs listed in-app: iPhone 15 Pro / A17 Pro or later, iOS 18+; arrives with the iOS app). [shipped]
@@ -104,9 +105,11 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Honest comparison pages at /vs/duolingo, /vs/anki, /vs/google-translate, /vs/jisho (plus a tabbed section on the landing): what each tool is good at, where life in Japan needs more, feature-by-feature ○/△/✕ table. [shipped]
 - Pricing section (free vs premium with monthly/yearly toggle) and a download section: App Store badge routes to a TestFlight-notify flow until the store listing exists, web app CTA works today. [shipped]
 - Sketchbook design language shared with the app (paper/ink/dark tokens, Klee One + Zen Kaku Gothic New, marker-stroke underlines), plus ink-fog hero, smooth scrolling, scroll reveals. KanjiVG/EDRDG attribution in the footer. [shipped]
+- Hero: text sits center-left with an auto-playing app demo reel in a phone frame on the right (capture → understand → keep, looping gif-style; stacks under the text on mobile), and the brand wordmark itself teaches the pun by rotating My Nichi → My 毎日 → MaiNichi → 毎日. [shipped]
 
 ### App shell & navigation [shipped]
 - Full-height app shell with a custom bottom tab bar: one kanji per feature (訳帳辞話設), colored with the feature accent when active, English label beneath; correct in light and dark mode. [shipped]
+- Desktop web is a real desktop experience, not a phone column: at 900px and up the tab bar becomes a left side rail (brand mark on top), content widens to a 1000px column, lists and dictionary results flow into a two-column grid, and translate results show the Japanese and the explanations side by side. Below 900px (and on native) the phone layout applies. [shipped]
 - Every screen shares the sketchbook scaffold: kana reading over a big Klee One heading with an accent brush stroke, scrollable body, safe-area aware, back navigation on pushed screens. [shipped]
 - Settings is a real screen: language preview, appearance note, privacy promises, dictionary licence attribution (EDRDG/JMdict, KanjiVG), version, feedback link. [shipped]
 

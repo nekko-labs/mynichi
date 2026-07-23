@@ -5,6 +5,7 @@ import { CATEGORY_META, LIST_CATEGORIES, type ListCategory } from '@mynichi/core
 
 import { Screen } from '@/components/screen';
 import { Button, Card, Chip, EmptyState, Label } from '@/components/ui';
+import { useWideLayout } from '@/lib/layout';
 import { createList, useListsDoc } from '@/store/lists';
 import { colors, text } from '../../theme/tokens.css';
 
@@ -14,6 +15,7 @@ export default function ListsScreen() {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const [category, setCategory] = useState<ListCategory>('life');
+  const wide = useWideLayout();
   const now = Date.now();
 
   function submit() {
@@ -76,11 +78,12 @@ export default function ListsScreen() {
           hint="Not someone else's curriculum. Make a list for work, the ward office, the clinic, and capture the words your day hands you."
         />
       ) : (
-        <html.div style={styles.listCol}>
+        <html.div style={[styles.listCol, wide && styles.listGrid]}>
           {doc.lists.map((list) => {
             const due = list.items.filter((i) => i.srs.due <= now).length;
             return (
-              <Card key={list.id} onClick={() => router.push(`/list/${list.id}`)}>
+              <html.div key={list.id} style={wide ? styles.cellWide : styles.cell}>
+              <Card onClick={() => router.push(`/list/${list.id}`)}>
                 <html.div style={styles.cardRow}>
                   <html.span style={styles.catKanji}>{CATEGORY_META[list.category].kanji}</html.span>
                   <html.div style={styles.cardBody}>
@@ -93,6 +96,7 @@ export default function ListsScreen() {
                   {due > 0 ? <html.span style={styles.due}>{due} due</html.span> : null}
                 </html.div>
               </Card>
+              </html.div>
             );
           })}
         </html.div>
@@ -130,6 +134,25 @@ const styles = css.create({
     flexDirection: 'column',
     rowGap: 10,
     marginTop: 4
+  },
+  listGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'stretch',
+    gap: 12
+  },
+  cell: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch'
+  },
+  cellWide: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    flexGrow: 1,
+    flexBasis: '46%',
+    minWidth: 300
   },
   cardRow: {
     display: 'flex',

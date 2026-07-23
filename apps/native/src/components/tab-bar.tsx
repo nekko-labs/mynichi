@@ -1,6 +1,7 @@
 import { css, html } from 'react-strict-dom';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { RAIL_WIDTH, useWideLayout } from '../lib/layout';
 import { colors, text } from '../theme/tokens.css';
 
 // One kanji per feature, colored with the feature accent when active. The
@@ -31,53 +32,92 @@ type TabBarProps = {
 
 export function TabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
+  const wide = useWideLayout();
+
+  const items = state.routes.map((route, i) => {
+    const meta = TAB_META[route.name];
+    if (!meta) return null;
+    const active = state.index === i;
+
+    const onPress = () => {
+      const event = navigation.emit({
+        type: 'tabPress',
+        target: route.key,
+        canPreventDefault: true
+      });
+      if (!active && !event.defaultPrevented) {
+        navigation.navigate(route.name);
+      }
+    };
+
+    return (
+      <html.button
+        key={route.key}
+        style={[styles.item, wide && styles.itemWide]}
+        onClick={onPress}
+        aria-label={meta.title}
+        role="tab"
+        aria-selected={active}
+      >
+        <html.span
+          style={[styles.kanji, active ? styles.kanjiActive(meta.accent) : styles.kanjiIdle]}
+        >
+          {meta.kanji}
+        </html.span>
+        <html.span
+          style={[styles.label, active ? styles.labelActive(meta.accent) : styles.labelIdle]}
+        >
+          {meta.title}
+        </html.span>
+        <html.div style={[styles.brush, active && styles.brushActive(meta.accent)]} />
+      </html.button>
+    );
+  });
+
+  // Desktop web: a left rail instead of a bottom bar.
+  if (wide) {
+    return (
+      <html.div style={[styles.rail, styles.railWidth(RAIL_WIDTH)]}>
+        <html.span style={styles.brand}>
+          my<html.span style={styles.brandNichi}>日</html.span>
+        </html.span>
+        {items}
+      </html.div>
+    );
+  }
 
   return (
-    <html.div style={[styles.bar, styles.inset(Math.max(insets.bottom, 8))]}>
-      {state.routes.map((route, i) => {
-        const meta = TAB_META[route.name];
-        if (!meta) return null;
-        const active = state.index === i;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true
-          });
-          if (!active && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-
-        return (
-          <html.button
-            key={route.key}
-            style={styles.item}
-            onClick={onPress}
-            aria-label={meta.title}
-            role="tab"
-            aria-selected={active}
-          >
-            <html.span
-              style={[styles.kanji, active ? styles.kanjiActive(meta.accent) : styles.kanjiIdle]}
-            >
-              {meta.kanji}
-            </html.span>
-            <html.span
-              style={[styles.label, active ? styles.labelActive(meta.accent) : styles.labelIdle]}
-            >
-              {meta.title}
-            </html.span>
-            <html.div style={[styles.brush, active && styles.brushActive(meta.accent)]} />
-          </html.button>
-        );
-      })}
-    </html.div>
+    <html.div style={[styles.bar, styles.inset(Math.max(insets.bottom, 8))]}>{items}</html.div>
   );
 }
 
 const styles = css.create({
+  railWidth: (w: number) => ({ width: w }),
+  rail: {
+    position: 'fixed',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    rowGap: 6,
+    backgroundColor: colors.paper,
+    borderRightWidth: 1,
+    borderRightStyle: 'solid',
+    borderRightColor: colors.line,
+    paddingTop: 24,
+    zIndex: 10
+  },
+  brand: {
+    fontFamily: text.brandBold,
+    fontSize: 20,
+    color: colors.ink,
+    marginBottom: 20
+  },
+  brandNichi: {
+    color: colors.hanko
+  },
   bar: {
     display: 'flex',
     flexDirection: 'row',
@@ -106,6 +146,11 @@ const styles = css.create({
     paddingRight: 10,
     minWidth: 56,
     cursor: 'pointer'
+  },
+  itemWide: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    width: '100%'
   },
   kanji: {
     fontFamily: text.brandBold,
