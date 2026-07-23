@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>mynichi on Lynx (PoC)</title>
+    <script type="module" src="/static/js/client.js"></script>
+    <link rel="stylesheet" href="/static/css/client.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #faf7f0;
+      }
+      lynx-view {
+        display: block;
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+  <body>
+    <lynx-view url="/main.web.bundle"></lynx-view>
+  </body>
+</html>
