@@ -47,3 +47,12 @@ export function useNow(): number {
 export function currentTime(): number {
   return Date.now();
 }
+
+/**
+ * Pull the clock forward now instead of waiting for the tick. Stores call
+ * this when they write, so a word captured a second ago counts as due
+ * straight away rather than a tick later.
+ */
+export function syncNow() {
+  tick();
+}

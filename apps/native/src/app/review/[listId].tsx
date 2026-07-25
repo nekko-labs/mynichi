@@ -83,9 +83,6 @@ export default function ReviewScreen() {
                     variant="display"
                     center
                   />
-                  {item.reading && !item.text.includes(item.reading) ? (
-                    <html.span style={styles.reading}>{item.reading}</html.span>
-                  ) : null}
                   {item.meaning ? <html.p style={styles.meaning}>{item.meaning}</html.p> : null}
                   {item.example ? <html.p style={styles.example}>{item.example}</html.p> : null}
                 </html.div>
