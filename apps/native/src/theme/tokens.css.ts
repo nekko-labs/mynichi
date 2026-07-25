@@ -20,6 +20,10 @@ export const colors = css.defineVars({
     default: '#6B6575',
     '@media (prefers-color-scheme: dark)': '#A39DAD'
   },
+  // Ink that sits on a filled accent (solid buttons, the practice avatar).
+  // Deliberately the same in both schemes: the accent underneath does not
+  // change, so neither does the ink on it.
+  onAccent: '#FFFFFF',
   // Soft hairline for the rare places spacing alone can't separate (tab bar).
   line: {
     default: 'rgba(42, 39, 50, 0.10)',

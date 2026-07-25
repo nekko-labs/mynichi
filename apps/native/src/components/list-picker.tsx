@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { css, html } from 'react-strict-dom';
-import { CATEGORY_META, LIST_CATEGORIES, type ListCategory } from '@mynichi/core';
+import { CATEGORY_META, LIST_CATEGORIES } from '@mynichi/core';
 
-import { Button, Chip, Label } from '@/components/ui';
-import { createList, useListsDoc } from '@/store/lists';
-import { colors, text } from '../theme/tokens.css';
+import { Button, Chip, Field, Label } from '@/components/ui';
+import { useListForm } from '@/state/list-form';
+import { useListsDoc } from '@/store/lists';
+import { colors } from '../theme/tokens.css';
 
 type Props = {
   /** Soft tint for the list chips (feature accent). */
@@ -21,15 +22,12 @@ type Props = {
 export function ListPicker({ tint, accent, onPick }: Props) {
   const doc = useListsDoc();
   const [creating, setCreating] = useState(doc.lists.length === 0);
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<ListCategory>('life');
+  const form = useListForm();
   const accentColor = accent ?? colors.matcha;
 
   function createAndPick() {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    const list = createList(trimmed, category);
-    setName('');
+    const list = form.submit();
+    if (!list) return;
     setCreating(false);
     onPick(list.id, list.name);
   }
@@ -61,14 +59,13 @@ export function ListPicker({ tint, accent, onPick }: Props) {
 
       {creating ? (
         <html.div style={styles.form}>
-          <html.input
-            style={styles.input}
+          <Field
+            label="Name the list"
+            value={form.name}
+            onChange={form.setName}
+            onSubmit={createAndPick}
             placeholder="Name the list… e.g. Ward office runs"
-            value={name}
-            onChange={(e: { target: { value: string } }) => setName(e.target.value)}
-            onKeyDown={(e: { key: string }) => {
-              if (e.key === 'Enter') createAndPick();
-            }}
+            error={form.error}
             autoFocus
           />
           <html.div style={styles.catRow}>
@@ -76,10 +73,10 @@ export function ListPicker({ tint, accent, onPick }: Props) {
               <Chip
                 key={c}
                 label={`${CATEGORY_META[c].kanji} ${CATEGORY_META[c].label}`}
-                selected={category === c}
+                selected={form.category === c}
                 accent={accentColor}
                 tint={colors.paperLift}
-                onClick={() => setCategory(c)}
+                onClick={() => form.setCategory(c)}
               />
             ))}
           </html.div>
@@ -88,7 +85,7 @@ export function ListPicker({ tint, accent, onPick }: Props) {
               label="Create and save here"
               accent={accentColor}
               onClick={createAndPick}
-              disabled={!name.trim()}
+              disabled={!form.canSubmit}
             />
           </html.div>
         </html.div>
@@ -112,17 +109,6 @@ const styles = css.create({
     display: 'flex',
     flexDirection: 'column',
     marginTop: 12
-  },
-  input: {
-    fontFamily: text.body,
-    fontSize: 15,
-    color: colors.ink,
-    backgroundColor: colors.paperLift,
-    borderRadius: 10,
-    borderStyle: 'none',
-    borderWidth: 0,
-    padding: 11,
-    marginBottom: 10
   },
   catRow: {
     display: 'flex',

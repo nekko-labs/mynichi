@@ -112,6 +112,8 @@ The core feelings the product sells: **relief** ("I can deal with this document"
 - Desktop web is a real desktop experience, not a phone column: at 900px and up the tab bar becomes a left side rail (brand mark on top), content widens to a 1000px column, lists and dictionary results flow into a two-column grid, and translate results show the Japanese and the explanations side by side. Below 900px (and on native) the phone layout applies. [shipped]
 - Every screen shares the sketchbook scaffold: kana reading over a big Klee One heading with an accent brush stroke, scrollable body, safe-area aware, back navigation on pushed screens. [shipped]
 - Settings is a real screen: language preview, appearance note, privacy promises, dictionary licence attribution (EDRDG/JMdict, KanjiVG), version, feedback link. [shipped]
+- Nothing fails silently: when the translate engine, the enrich call, the practice model or the offline dictionary cannot be reached, a paper-toned notification slides in above the tab bar in plain language, with a Retry action where retrying makes sense, and saves confirm the same way. Notifications are announced politely to screen readers, never steal focus, auto-dismiss, and carry no user text off the device. [shipped]
+- If a screen crashes outright, the app shows a recovery page (what happened, that nothing was sent anywhere, and a Try again button) instead of a blank white screen. [shipped]
 
 ### Multi-language UI [planned]
 - UI + translation target languages at launch: English, German, Chinese, Spanish, Portuguese, French, Italian, Tagalog, Thai, Korean. Set in Settings; defaults to device locale. [planned]

@@ -1,0 +1,75 @@
+/**
+ * The sketchbook token contract, expressed for the Lynx shell.
+ *
+ * This file is the Lynx implementation of
+ * apps/native/src/theme/contract.css.ts. It is deliberately mechanical: every
+ * contract token, same name, same value, light and dark. Keeping it that way
+ * is what makes cross-shell parity checkable instead of eyeballed, and
+ * apps/native/src/theme/tokens.test.ts fails the build if the two drift.
+ *
+ * Lynx styles must use var(--mynichi-*); a raw hex in App.css is a bug.
+ */
+
+:root {
+  /* Surfaces */
+  --mynichi-paper: #faf7f0;
+  --mynichi-paper-shade: #f1ece1;
+  --mynichi-paper-lift: #ffffff;
+  /* Ink */
+  --mynichi-ink: #2a2732;
+  --mynichi-ink-soft: #6b6575;
+  --mynichi-on-accent: #ffffff;
+  --mynichi-line: rgba(42, 39, 50, 0.10);
+  /* Feature accents */
+  --mynichi-hanko: #e4573d;
+  --mynichi-indigo: #3e5c9a;
+  --mynichi-matcha: #7fa65a;
+  --mynichi-yuzu: #f2b441;
+  --mynichi-sakura: #f2a7b8;
+  /* Feature-tinted paper fills */
+  --mynichi-indigo-soft: #e9edf7;
+  --mynichi-matcha-soft: #ebf1e3;
+  --mynichi-yuzu-soft: #fbefd8;
+  --mynichi-sakura-soft: #fbe8ec;
+  --mynichi-hanko-soft: #fae3de;
+
+  /* Type scale: sizes in px, leadings unitless. */
+  --mynichi-size-display: 38px;
+  --mynichi-size-title: 24px;
+  --mynichi-size-heading: 18px;
+  --mynichi-size-body: 16px;
+  --mynichi-size-body-small: 14px;
+  --mynichi-size-caption: 13px;
+  --mynichi-size-micro: 11px;
+  --mynichi-leading-display: 1.25;
+  --mynichi-leading-title: 1.35;
+  --mynichi-leading-heading: 1.45;
+  --mynichi-leading-body: 1.7;
+  --mynichi-leading-body-small: 1.65;
+  --mynichi-leading-caption: 1.55;
+  --mynichi-leading-micro: 1.5;
+  --mynichi-leading-flat: 1;
+
+  /* Radii */
+  --mynichi-radius-small: 10px;
+  --mynichi-radius-medium: 12px;
+  --mynichi-radius-large: 16px;
+  --mynichi-radius-xlarge: 20px;
+  --mynichi-radius-pill: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mynichi-paper: #17161a;
+    --mynichi-paper-shade: #221f27;
+    --mynichi-paper-lift: #201e25;
+    --mynichi-ink: #f3efe7;
+    --mynichi-ink-soft: #a39dad;
+    --mynichi-line: rgba(243, 239, 231, 0.12);
+    --mynichi-indigo-soft: #242b3d;
+    --mynichi-matcha-soft: #242b1f;
+    --mynichi-yuzu-soft: #302818;
+    --mynichi-sakura-soft: #31232a;
+    --mynichi-hanko-soft: #33211e;
+  }
+}

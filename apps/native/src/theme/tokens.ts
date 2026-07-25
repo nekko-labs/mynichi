@@ -1,21 +1,23 @@
 // Plain design tokens for React Native chrome (tab bar, navigation, splash).
-// RSD components use tokens.stylex.ts instead; keep the two files in sync.
+// RSD components use tokens.css.ts instead; both shells implement the same
+// contract in theme/contract.css.ts, and tokens.test.ts fails if they drift.
 // Source of truth for the palette: TASKS.md "Design System & UI/UX".
+import { colorContract, leading, size } from './contract.css';
 
 export const palette = {
-  paper: '#FAF7F0',
-  paperShade: '#F1ECE1',
-  paperDark: '#17161A',
-  paperDarkShade: '#221F27',
-  ink: '#2A2732',
-  inkSoft: '#6B6575',
-  inkOnDark: '#F3EFE7',
-  inkSoftOnDark: '#A39DAD',
-  hanko: '#E4573D',
-  indigo: '#3E5C9A',
-  matcha: '#7FA65A',
-  yuzu: '#F2B441',
-  sakura: '#F2A7B8'
+  paper: colorContract.paper.light,
+  paperShade: colorContract.paperShade.light,
+  paperDark: colorContract.paper.dark,
+  paperDarkShade: colorContract.paperShade.dark,
+  ink: colorContract.ink.light,
+  inkSoft: colorContract.inkSoft.light,
+  inkOnDark: colorContract.ink.dark,
+  inkSoftOnDark: colorContract.inkSoft.dark,
+  hanko: colorContract.hanko.light,
+  indigo: colorContract.indigo.light,
+  matcha: colorContract.matcha.light,
+  yuzu: colorContract.yuzu.light,
+  sakura: colorContract.sakura.light
 } as const;
 
 // Each top-level feature owns an accent.
@@ -35,4 +37,21 @@ export const fonts = {
   body: 'ZenKakuGothicNew_400Regular',
   bodyMedium: 'ZenKakuGothicNew_500Medium',
   bodyBold: 'ZenKakuGothicNew_700Bold'
+} as const;
+
+// Japanese type needs its leading spelled out: React Native's default line
+// height clips Klee One's ascenders and leaves no room above a kanji for its
+// furigana. RN wants absolute line heights, so the contract multipliers are
+// resolved against each size here.
+export const type = {
+  display: { fontSize: size.display, lineHeight: Math.round(size.display * leading.display) },
+  title: { fontSize: size.title, lineHeight: Math.round(size.title * leading.title) },
+  heading: { fontSize: size.heading, lineHeight: Math.round(size.heading * leading.heading) },
+  body: { fontSize: size.body, lineHeight: Math.round(size.body * leading.body) },
+  bodySmall: {
+    fontSize: size.bodySmall,
+    lineHeight: Math.round(size.bodySmall * leading.bodySmall)
+  },
+  caption: { fontSize: size.caption, lineHeight: Math.round(size.caption * leading.caption) },
+  micro: { fontSize: size.micro, lineHeight: Math.round(size.micro * leading.micro) }
 } as const;
