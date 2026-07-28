@@ -1,0 +1,39 @@
+# mynichi
+
+> Japanese learning for people who actually live in Japan. mynichi turns your daily life into your curriculum: photo-translate the letter in your mailbox, capture words you overhear in five seconds, draw the kanji you can't type, and rehearse tomorrow's phone call with a judgment-free AI. Privacy-first and offline-capable, native iOS first, web at mynichi.app. By Nekko Labs.
+
+The Japanese that matters does not arrive in curriculum order. It arrives as a pension letter, a door sign, and a coworker saying 巻きで. mynichi starts from what your day hands you rather than from a lesson plan.
+
+## The four loops
+
+1. **Translate (翻訳)**: photograph or paste any Japanese text and get four layers back: the original with furigana, romaji, the literal translation, and the practical one, meaning what it actually means and what you should do about it. Built for documents where getting it wrong has consequences.
+2. **Lists (リスト)**: hear a word, save it in five seconds, and mynichi enriches the entry for you (reading, meaning, examples). No decks to build. Spaced repetition (FSRS-class scheduling) keeps it, and for kanji your hand is part of the review with live stroke-order writing practice.
+3. **Dictionary (辞書)**: a full offline dictionary you can draw into, build from radicals, or search by meaning. Highlights exactly which strokes differ between look-alike kanji (未 vs 末). Runs on open JMdict and KanjiVG stroke data, with credit to Jisho for the same open source data.
+4. **AI practice (会話)**: rehearse a real situation, like calling the dentist, with an AI character that has infinite patience and no opinions about your accent.
+
+## Key facts
+
+- **Platforms**: native iOS first (Expo), plus the web app at https://mynichi.app/app/. Android planned.
+- **Privacy**: local-first, your data lives on your phone. On-device AI practice on iPhone 15 Pro or newer. No training on your data, voice is never stored.
+- **Translation model**: a self-trained, license-clean SLM (a LoRA fine-tune of Qwen3-4B-Instruct-2507, Apache-2.0) powers the grounded translate pipeline.
+- **Pricing**: Free forever for daily capture, offline, no account: photo and paste translate with the practical layer, practice lists with 5-second enriched capture, the full offline dictionary, spaced repetition including stroke-order writing practice, on-device AI practice, and local-first storage. Premium is $14/month billed yearly, or $20/month, and adds a frontier cloud model for translation and AI practice plus cloud sync across iPhone, iPad, and web, under the same privacy promise.
+
+## Pages
+
+- [Home](https://mynichi.app/): the four loops, with live interactive demos running on real data, honest comparisons, and pricing.
+- [Open the app](https://mynichi.app/app/): the web version of the app.
+- [mynichi vs Duolingo](https://mynichi.app/vs/duolingo): a course about Japan versus a tool for your life in Japan.
+- [mynichi vs Anki](https://mynichi.app/vs/anki): spaced repetition without the deck-building homework.
+- [mynichi vs Google Translate](https://mynichi.app/vs/google-translate): it decodes, mynichi makes sure you understood.
+- [mynichi vs Jisho](https://mynichi.app/vs/jisho): a dictionary tab versus a dictionary that feeds your practice.
+
+## Honest comparisons (summary)
+
+- **Duolingo** is good at building a habit from zero, but it cannot teach Tuesday's mail. Choose mynichi when your life, not a lesson plan, decides what you need today.
+- **Anki**'s scheduler is the gold standard, but every card is homework before the homework. mynichi makes the card for you in five seconds and adds stroke-order writing practice.
+- **Google Translate** is fast and free for a gist, but it hands you one literal line and walks away. mynichi adds the practical layer and saves the words into your review loop.
+- **Jisho** is a lovely reference on the same open data, but a browser tab does not work in the ward-office basement and every lookup evaporates. mynichi bundles it offline and turns any entry into a reviewed list item.
+
+## Source
+
+- [GitHub repository](https://github.com/nekko-labs/mynichi): source and issues.
