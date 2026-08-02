@@ -41,7 +41,7 @@ python train.py --data data/train.jsonl --out runs/r8-lr2e4 --rank 8 --lr 2e-4 -
 python eval.py --adapter runs/r8-lr2e4
 ```
 
-The kotrain training run drives steps 2-3 in a loop, varying hyperparameters
+The Nekkos training run drives steps 2-3 in a loop, varying hyperparameters
 and reporting each experiment's `score`.
 
 ## Winner + how it's served

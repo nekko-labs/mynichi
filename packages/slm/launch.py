@@ -1,6 +1,6 @@
-"""Detached experiment runner for agent-driven training (kotrain).
+"""Detached experiment runner for agent-driven training (Nekkos).
 
-The kotrain agent's bash tool kills anything after 120 seconds, so training
+The Nekkos agent's bash tool kills anything after 120 seconds, so training
 must run detached. This wrapper starts train.py + eval.py as a background
 process and lets the agent poll for the result.
 
