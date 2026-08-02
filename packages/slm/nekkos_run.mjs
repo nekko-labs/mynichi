@@ -1,14 +1,14 @@
-// Create + drive a kotrain training run for the mynichi SLM, headlessly.
+// Create + drive a Nekkos training run for the mynichi SLM, headlessly.
 //
-//   node kotrain_run.mjs create   -> prints run id, starts it
-//   node kotrain_run.mjs watch <runId>
-//   node kotrain_run.mjs hint <runId> "<text>"
-//   node kotrain_run.mjs stop <runId>
+//   node nekkos_run.mjs create   -> prints run id, starts it
+//   node nekkos_run.mjs watch <runId>
+//   node nekkos_run.mjs hint <runId> "<text>"
+//   node nekkos_run.mjs stop <runId>
 //
-// Requires the kotrain web server (npm run web in the kotrain repo, port 1440)
+// Requires the Nekkos web server (npm run web in the nekkos repo, port 1440)
 // and LM Studio serving the agent model at 127.0.0.1:1338.
 
-const BASE = process.env.KOTRAIN_URL ?? 'http://localhost:1440';
+const BASE = process.env.NEKKOS_URL ?? 'http://localhost:1440';
 const AGENT_PROVIDER = 'lmstudio-x';
 const AGENT_MODEL = 'google/gemma-4-12b';
 const SLM_DIR = 'C:/Users/phili/code/mynichi/packages/slm';
@@ -94,5 +94,5 @@ if (cmd === 'create') {
   await call('training:stop', process.argv[3]);
   console.log('stopped');
 } else {
-  console.log('usage: node kotrain_run.mjs create | watch <id> | hint <id> "text" | stop <id>');
+  console.log('usage: node nekkos_run.mjs create | watch <id> | hint <id> "text" | stop <id>');
 }
