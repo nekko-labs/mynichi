@@ -1,6 +1,7 @@
-/* Sketchbook tokens (mirrors apps/native/src/theme): paper, ink, yuzu accent. */
+/* Lynx PoC styles. Every value comes from tokens.css, the Lynx side of the
+   token contract in apps/native/src/theme/contract.css.ts. No raw hex here. */
 :root {
-  background-color: #faf7f0;
+  background-color: var(--mynichi-paper);
 }
 
 .Screen {
@@ -17,14 +18,14 @@
 }
 
 .Reading {
-  font-size: 14px;
-  color: #6b6575;
+  font-size: var(--mynichi-size-body-small);
+  color: var(--mynichi-ink-soft);
 }
 
 .Kanji {
   font-size: 34px;
   font-weight: 700;
-  color: #2a2732;
+  color: var(--mynichi-ink);
 }
 
 .Brush {
@@ -32,15 +33,15 @@
   width: 64px;
   border-radius: 3px;
   margin-top: 5px;
-  background-color: #f2b441;
+  background-color: var(--mynichi-yuzu);
   transform: rotate(-1.2deg);
 }
 
 .Search {
-  font-size: 16px;
-  color: #2a2732;
-  background-color: #f1ece1;
-  border-radius: 12px;
+  font-size: var(--mynichi-size-body);
+  color: var(--mynichi-ink);
+  background-color: var(--mynichi-paper-shade);
+  border-radius: var(--mynichi-radius-medium);
   padding: 14px;
   margin-bottom: 14px;
   width: 100%;
@@ -56,21 +57,21 @@
 
 .EmptyKanji {
   font-size: 44px;
-  color: #6b6575;
+  color: var(--mynichi-ink-soft);
   opacity: 0.5;
   margin-bottom: 10px;
 }
 
 .EmptyTitle {
-  font-size: 16px;
+  font-size: var(--mynichi-size-body);
   font-weight: 700;
-  color: #2a2732;
+  color: var(--mynichi-ink);
   margin-bottom: 4px;
 }
 
 .EmptyHint {
-  font-size: 14px;
-  color: #6b6575;
+  font-size: var(--mynichi-size-body-small);
+  color: var(--mynichi-ink-soft);
   text-align: center;
 }
 
@@ -83,8 +84,8 @@
 .Card {
   display: flex;
   flex-direction: column;
-  background-color: #f4f0e6;
-  border-radius: 16px;
+  background-color: var(--mynichi-paper-shade);
+  border-radius: var(--mynichi-radius-large);
   padding: 16px;
   margin-bottom: 8px;
 }
@@ -98,34 +99,34 @@
 .Word {
   font-size: 22px;
   font-weight: 700;
-  color: #2a2732;
+  color: var(--mynichi-ink);
   margin-right: 10px;
 }
 
 .Kana {
-  font-size: 14px;
-  color: #6b6575;
+  font-size: var(--mynichi-size-body-small);
+  color: var(--mynichi-ink-soft);
 }
 
 .Gloss {
-  font-size: 14px;
-  color: #6b6575;
+  font-size: var(--mynichi-size-body-small);
+  color: var(--mynichi-ink-soft);
   margin-top: 2px;
 }
 
 .Chip {
   align-self: flex-start;
-  background-color: rgba(242, 180, 65, 0.18);
-  border-radius: 999px;
+  background-color: var(--mynichi-yuzu-soft);
+  border-radius: var(--mynichi-radius-pill);
   padding: 7px 14px;
   margin-top: 10px;
 }
 
 .ChipDone {
-  background-color: #7fa65a;
+  background-color: var(--mynichi-matcha);
 }
 
 .ChipText {
-  font-size: 14px;
-  color: #2a2732;
+  font-size: var(--mynichi-size-body-small);
+  color: var(--mynichi-ink);
 }

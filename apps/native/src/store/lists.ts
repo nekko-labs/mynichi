@@ -12,6 +12,8 @@ import {
   type SrsGrade
 } from '@mynichi/core';
 
+import { syncNow } from '../lib/time';
+
 // Local-first lists store. The free tier owns its data on the device; cloud
 // sync arrives as a premium feature (T51). Web persists to localStorage; the
 // native build swaps this driver for expo-sqlite when the iOS app lands (T53).
@@ -61,6 +63,7 @@ function commit(next: ListsDoc) {
     // Storage full or unavailable; keep the in-memory state alive.
   }
   listeners.forEach((fn) => fn());
+  syncNow();
 }
 
 function subscribe(fn: () => void): () => void {

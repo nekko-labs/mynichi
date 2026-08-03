@@ -11,6 +11,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { ErrorBoundary } from '@/components/error-boundary';
+import { ToastProvider } from '@/components/toast';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,12 +40,19 @@ export default function RootLayout() {
     return null;
   }
 
+  // ErrorBoundary outermost so a crash inside the toast layer still lands on
+  // the paper error page; ToastProvider above the router so any screen can
+  // report a failure without threading props.
   return (
-    <>
+    <SafeAreaProvider>
       <StatusBar style="auto" />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </>
+      <ErrorBoundary>
+        <ToastProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </ToastProvider>
+      </ErrorBoundary>
+    </SafeAreaProvider>
   );
 }

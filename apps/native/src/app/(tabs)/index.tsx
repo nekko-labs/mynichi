@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { css, html } from 'react-strict-dom';
 import type { TranslateResponse } from '@mynichi/core';
 
+import { Enter } from '@/components/motion';
 import { RubyText } from '@/components/ruby-text';
 import { Screen } from '@/components/screen';
+import { useToast } from '@/components/toast';
 import { Button, Chip, Label } from '@/components/ui';
 import { translateText } from '@/lib/api';
 import { useWideLayout } from '@/lib/layout';
+import { leading, measure, radius, size } from '../../theme/contract.css';
 import { colors, text } from '../../theme/tokens.css';
 
 const SAMPLES = [
@@ -25,6 +28,7 @@ export default function TranslateScreen() {
   const [input, setInput] = useState('');
   const [state, setState] = useState<State>({ kind: 'idle' });
   const wide = useWideLayout();
+  const toast = useToast();
 
   async function translate(raw: string) {
     const trimmed = raw.trim();
@@ -33,9 +37,12 @@ export default function TranslateScreen() {
     try {
       setState({ kind: 'result', data: await translateText(trimmed) });
     } catch {
-      setState({
-        kind: 'error',
-        message: 'Could not reach the translate engine. Check your connection and try again.'
+      const message =
+        'Could not reach the translate engine. Check your connection and try again.';
+      setState({ kind: 'error', message });
+      toast.show(message, {
+        tone: 'error',
+        action: { label: 'Retry', onClick: () => void translate(trimmed) }
       });
     }
   }
@@ -65,7 +72,8 @@ export default function TranslateScreen() {
       </html.div>
 
       {state.kind === 'idle' ? (
-        <html.div style={styles.samples}>
+        <Enter kind="fade">
+          <html.div style={styles.samples}>
           <Label>Try one from real life</Label>
           <html.div style={styles.sampleRow}>
             {SAMPLES.map((s) => (
@@ -80,18 +88,25 @@ export default function TranslateScreen() {
               />
             ))}
           </html.div>
-          <html.p style={styles.hint}>
-            The scary letter, the overheard phrase, the sign you walked past. Paste it here and
-            see the kanji, furigana, and what it actually means.
-          </html.p>
-        </html.div>
+            <html.p style={styles.hint}>
+              The scary letter, the overheard phrase, the sign you walked past. Paste it here and
+              see the kanji, furigana, and what it actually means.
+            </html.p>
+          </html.div>
+        </Enter>
       ) : null}
 
       {state.kind === 'loading' ? (
-        <html.p style={styles.hint}>Reading it the way a local would…</html.p>
+        <html.p style={styles.hint} aria-live="polite">
+          Reading it the way a local would…
+        </html.p>
       ) : null}
 
-      {state.kind === 'error' ? <html.p style={styles.error}>{state.message}</html.p> : null}
+      {state.kind === 'error' ? (
+        <html.p style={styles.error} role="alert">
+          {state.message}
+        </html.p>
+      ) : null}
 
       {state.kind === 'result' ? (
         <html.div style={[styles.result, wide && styles.resultWide]}>
@@ -116,10 +131,10 @@ const styles = css.create({
   input: {
     fontFamily: text.body,
     fontSize: 17,
-    lineHeight: 1.6,
+    lineHeight: leading.body,
     color: colors.ink,
     backgroundColor: colors.paperShade,
-    borderRadius: 14,
+    borderRadius: radius.large,
     borderStyle: 'none',
     borderWidth: 0,
     padding: 16,
@@ -145,19 +160,19 @@ const styles = css.create({
   },
   hint: {
     fontFamily: text.body,
-    fontSize: 14,
-    lineHeight: 1.6,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.inkSoft,
     marginTop: 16,
-    maxWidth: 420
+    maxWidth: measure.note
   },
   error: {
     fontFamily: text.body,
-    fontSize: 14,
-    lineHeight: 1.6,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.hanko,
     marginTop: 16,
-    maxWidth: 420
+    maxWidth: measure.note
   },
   result: {
     display: 'flex',
@@ -181,7 +196,8 @@ const styles = css.create({
   },
   romaji: {
     fontFamily: text.body,
-    fontSize: 13,
+    fontSize: size.caption,
+    lineHeight: leading.caption,
     color: colors.inkSoft,
     margin: 0,
     marginTop: 8,
@@ -189,11 +205,11 @@ const styles = css.create({
   },
   body: {
     fontFamily: text.body,
-    fontSize: 16,
-    lineHeight: 1.6,
+    fontSize: size.body,
+    lineHeight: leading.body,
     color: colors.ink,
     margin: 0,
     marginBottom: 14,
-    maxWidth: 480
+    maxWidth: measure.prose
   }
 });
