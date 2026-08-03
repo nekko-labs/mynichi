@@ -1,5 +1,6 @@
 import { useMemo, useState } from '@lynx-js/react'
 
+import './tokens.css'
 import './App.css'
 import { searchWords, type PocWord } from './dict.js'
 

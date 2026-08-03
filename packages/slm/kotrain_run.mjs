@@ -1,11 +1,11 @@
-// Create + drive a kotrain training run for the mynichi SLM, headlessly.
+// Create + drive a Kotrain training run for the mynichi SLM, headlessly.
 //
 //   node kotrain_run.mjs create   -> prints run id, starts it
 //   node kotrain_run.mjs watch <runId>
 //   node kotrain_run.mjs hint <runId> "<text>"
 //   node kotrain_run.mjs stop <runId>
 //
-// Requires the kotrain web server (npm run web in the kotrain repo, port 1440)
+// Requires the Kotrain web server (npm run web in the kotrain repo, port 1440)
 // and LM Studio serving the agent model at 127.0.0.1:1338.
 
 const BASE = process.env.KOTRAIN_URL ?? 'http://localhost:1440';

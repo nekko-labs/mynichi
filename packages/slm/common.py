@@ -11,7 +11,7 @@ STUDENT_SYSTEM = (
 )
 
 # Server-class student default; pass --base-model to train/eval for others
-# (e.g. the phone-class student picked by the kotrain research run).
+# (e.g. the phone-class student picked by the Kotrain research run).
 BASE_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
 
 

@@ -3,11 +3,14 @@ import { css, html } from 'react-strict-dom';
 import { katakanaToHiragana } from '@mynichi/core';
 
 import { ListPicker } from '@/components/list-picker';
+import { Enter } from '@/components/motion';
 import { Screen } from '@/components/screen';
-import { Card, EmptyState } from '@/components/ui';
+import { Card, EmptyState, Field } from '@/components/ui';
+import { useToast } from '@/components/toast';
 import { loadDict, posLabel, searchDict, type Dict, type DictWord } from '@/dict';
 import { useWideLayout } from '@/lib/layout';
 import { addItem } from '@/store/lists';
+import { leading, measure, size } from '../../theme/contract.css';
 import { colors, text } from '../../theme/tokens.css';
 
 type DictState = 'idle' | 'loading' | 'ready' | 'error';
@@ -21,6 +24,7 @@ export default function DictionaryScreen() {
   const dictRef = useRef<Dict | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wide = useWideLayout();
+  const toast = useToast();
 
   async function ensureDict(): Promise<Dict | null> {
     if (dictRef.current) return dictRef.current;
@@ -32,6 +36,10 @@ export default function DictionaryScreen() {
       return dict;
     } catch {
       setDictState('error');
+      toast.show('Could not open the offline dictionary.', {
+        tone: 'error',
+        action: { label: 'Retry', onClick: () => void ensureDict() }
+      });
       return null;
     }
   }
@@ -60,24 +68,28 @@ export default function DictionaryScreen() {
       source: 'dictionary'
     });
     setSavedTo((prev) => ({ ...prev, [word.s]: listName }));
+    toast.show(`Saved 「${word.k ?? word.r}」 to ${listName}.`, { tone: 'success' });
   }
 
   const trimmed = query.trim();
 
   return (
     <Screen reading="じしょ" kanji="辞書" title="Dictionary" accent={colors.yuzu}>
-      <html.input
-        style={styles.search}
-        placeholder="Japanese, romaji, or English… 例: byouin / hospital / 病院"
+      <Field
+        label="Search the dictionary"
         value={query}
-        onChange={(e: { target: { value: string } }) => onQuery(e.target.value)}
+        onChange={onQuery}
+        placeholder="Japanese, romaji, or English… 例: byouin / hospital / 病院"
+        surface="shade"
       />
 
       {dictState === 'loading' ? (
-        <html.p style={styles.hint}>Opening the dictionary… (first time takes a moment)</html.p>
+        <html.p style={styles.hint} aria-live="polite">
+          Opening the dictionary… (first time takes a moment)
+        </html.p>
       ) : null}
       {dictState === 'error' ? (
-        <html.p style={styles.errorText}>
+        <html.p style={styles.errorText} role="alert">
           Could not load the offline dictionary. Check your connection once and it will stay
           available.
         </html.p>
@@ -102,7 +114,10 @@ export default function DictionaryScreen() {
             const saved = savedTo[w.s];
             return (
               <html.div key={w.s} style={wide ? styles.cellWide : styles.cell}>
-              <Card onClick={open ? undefined : () => setOpenId(w.s)}>
+              <Card
+                onClick={open ? undefined : () => setOpenId(w.s)}
+                ariaLabel={`${w.k ?? w.r}: ${w.g.slice(0, 2).join('; ')}`}
+              >
                 <html.div style={styles.resultRow}>
                   <html.div style={styles.resultBody}>
                     <html.div style={styles.wordRow}>
@@ -118,8 +133,11 @@ export default function DictionaryScreen() {
 
                 {open ? (
                   <html.div style={styles.addBlock}>
+                    <Enter kind="fade" speed="fast">
                     {saved ? (
-                      <html.span style={styles.savedNote}>Saved to “{saved}”</html.span>
+                      <html.span style={styles.savedNote} role="status">
+                        Saved to “{saved}”
+                      </html.span>
                     ) : (
                       <ListPicker
                         tint={colors.yuzuSoft}
@@ -127,6 +145,7 @@ export default function DictionaryScreen() {
                         onPick={(listId, listName) => saveToList(w, listId, listName)}
                       />
                     )}
+                    </Enter>
                   </html.div>
                 ) : null}
               </Card>
@@ -144,28 +163,21 @@ export default function DictionaryScreen() {
 }
 
 const styles = css.create({
-  search: {
-    fontFamily: text.body,
-    fontSize: 16,
-    color: colors.ink,
-    backgroundColor: colors.paperShade,
-    borderRadius: 12,
-    borderStyle: 'none',
-    borderWidth: 0,
-    padding: 14,
-    marginBottom: 14
-  },
   hint: {
     fontFamily: text.body,
-    fontSize: 14,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.inkSoft,
-    marginTop: 4
+    marginTop: 4,
+    maxWidth: measure.note
   },
   errorText: {
     fontFamily: text.body,
-    fontSize: 14,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.hanko,
-    marginTop: 4
+    marginTop: 4,
+    maxWidth: measure.note
   },
   results: {
     display: 'flex',
@@ -210,23 +222,26 @@ const styles = css.create({
   word: {
     fontFamily: text.bodyBold,
     fontSize: 22,
+    lineHeight: leading.title,
     color: colors.ink
   },
   kana: {
     fontFamily: text.body,
-    fontSize: 14,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.inkSoft
   },
   gloss: {
     fontFamily: text.body,
-    fontSize: 14,
-    lineHeight: 1.5,
+    fontSize: size.bodySmall,
+    lineHeight: leading.bodySmall,
     color: colors.inkSoft,
     marginTop: 2
   },
   pos: {
     fontFamily: text.body,
     fontSize: 12,
+    lineHeight: leading.caption,
     color: colors.yuzu,
     marginTop: 4
   },
@@ -237,12 +252,13 @@ const styles = css.create({
   },
   savedNote: {
     fontFamily: text.bodyMedium,
-    fontSize: 13,
+    fontSize: size.caption,
+    lineHeight: leading.caption,
     color: colors.matcha
   },
   attribution: {
     fontFamily: text.body,
-    fontSize: 11,
+    fontSize: size.micro,
     color: colors.inkSoft,
     opacity: 0.7,
     textAlign: 'center',

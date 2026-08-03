@@ -14,8 +14,84 @@
       content="Your day is the curriculum. Capture, understand, and keep the Japanese your life hands you."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mynichi.app" />
+    <meta property="og:url" content="https://mynichi.app/" />
+    <meta property="og:site_name" content="mynichi" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://mynichi.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="mynichi: Japanese for daily living" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="mynichi | Japanese for daily living" />
+    <meta
+      name="twitter:description"
+      content="Your day is the curriculum. Capture, understand, and keep the Japanese your life hands you."
+    />
+    <meta name="twitter:image" content="https://mynichi.app/og.png" />
+    <link rel="canonical" href="https://mynichi.app/" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- Structured data: so search and answer engines describe mynichi accurately -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://nekkolabs.com/#organization",
+            "name": "Nekko Labs",
+            "url": "https://nekkolabs.com/"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://mynichi.app/#website",
+            "url": "https://mynichi.app/",
+            "name": "mynichi",
+            "description": "Japanese learning for people who live in Japan: your day is the curriculum.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://nekkolabs.com/#organization" }
+          },
+          {
+            "@type": "MobileApplication",
+            "@id": "https://mynichi.app/#app",
+            "name": "mynichi",
+            "url": "https://mynichi.app/",
+            "applicationCategory": "EducationalApplication",
+            "applicationSubCategory": "Japanese language learning",
+            "operatingSystem": "iOS, Web browser",
+            "inLanguage": ["en", "ja"],
+            "description": "mynichi turns your daily life in Japan into your Japanese curriculum: photo-translate documents with a practical 'what to do' layer, capture overheard words in five seconds, draw kanji you can't type in a full offline dictionary, and rehearse real conversations with a judgment-free AI.",
+            "featureList": [
+              "Photo and paste translation with furigana, romaji, literal and practical layers",
+              "Five-second enriched word capture into practice lists",
+              "Spaced repetition including live stroke-order writing practice",
+              "Full offline dictionary: draw it, build it from radicals, or search by meaning",
+              "Confusable-kanji comparison that highlights the differing strokes",
+              "Judgment-free AI conversation practice, on-device on recent iPhones",
+              "Local-first: your data lives on your phone"
+            ],
+            "publisher": { "@id": "https://nekkolabs.com/#organization" },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Free",
+                "price": "0",
+                "priceCurrency": "JPY",
+                "description": "Daily capture forever, offline and with no account: translate, practice lists, the offline dictionary, spaced repetition with writing practice, and on-device AI practice."
+              },
+              {
+                "@type": "Offer",
+                "name": "Premium",
+                "price": "14",
+                "priceCurrency": "USD",
+                "description": "$14/month billed yearly, or $20/month. Adds a frontier cloud model for translation and AI practice, plus cloud sync across iPhone, iPad, and web."
+              }
+            ]
+          }
+        ]
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
