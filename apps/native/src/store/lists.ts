@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { Platform } from 'react-native';
-import { Storage } from 'expo-sqlite/kv-store';
+import * as storage from './storage';
 import {
   initialSrs,
   reviewSrs,
@@ -22,27 +21,11 @@ import { pushDailyWord } from '../widgets/daily-word';
 
 const KEY = 'mynichi.lists.v1';
 
-type Driver = {
-  read: () => string | null;
-  write: (value: string) => void;
-};
-
-const driver: Driver =
-  Platform.OS === 'web'
-    ? {
-        read: () => (typeof localStorage === 'undefined' ? null : localStorage.getItem(KEY)),
-        write: (v) => localStorage.setItem(KEY, v)
-      }
-    : {
-        read: () => Storage.getItemSync(KEY),
-        write: (v) => Storage.setItemSync(KEY, v)
-      };
-
 const EMPTY: ListsDoc = { version: 1, lists: [] };
 
 function load(): ListsDoc {
   try {
-    const raw = driver.read();
+    const raw = storage.read(KEY);
     if (!raw) return EMPTY;
     const parsed = JSON.parse(raw) as ListsDoc;
     if (parsed.version !== 1 || !Array.isArray(parsed.lists)) return EMPTY;
@@ -59,7 +42,7 @@ pushDailyWord(doc.lists);
 function commit(next: ListsDoc) {
   doc = next;
   try {
-    driver.write(JSON.stringify(doc));
+    storage.write(KEY, JSON.stringify(doc));
   } catch {
     // Storage full or unavailable; keep the in-memory state alive.
   }
