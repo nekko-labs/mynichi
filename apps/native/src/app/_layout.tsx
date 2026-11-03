@@ -15,6 +15,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ErrorBoundary } from '@/components/error-boundary';
 import { ToastProvider } from '@/components/toast';
+// Loads the lists store at launch so the Lock Screen widget's timeline is
+// refreshed on every app start, not only once the Lists tab mounts.
+import '@/store/lists';
 
 SplashScreen.preventAutoHideAsync();
 

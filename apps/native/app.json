@@ -35,7 +35,32 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "expo-sqlite",
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "app.mynichi.ios.widgets",
+          "groupIdentifier": "group.app.mynichi",
+          "enablePushNotifications": false,
+          "widgets": [
+            {
+              "name": "DailyWord",
+              "displayName": "Daily word",
+              "description": "One word from your lists, every day, on the Lock Screen.",
+              "supportedFamilies": [
+                "accessoryRectangular",
+                "accessoryInline"
+              ],
+              "contentMarginsDisabled": false,
+              "android": null
+            }
+          ]
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

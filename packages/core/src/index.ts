@@ -24,3 +24,4 @@ export type ListCategory = (typeof LIST_CATEGORIES)[number];
 export const APP_LOCALES = ['en', 'de', 'zh', 'es', 'pt', 'fr', 'it', 'tl', 'th', 'ko'] as const;
 
 export type AppLocale = (typeof APP_LOCALES)[number];
+export * from './daily-word';

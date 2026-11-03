@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { Platform } from 'react-native';
+import * as storage from './storage';
 import {
   initialSrs,
   reviewSrs,
@@ -13,36 +13,19 @@ import {
 } from '@mynichi/core';
 
 import { syncNow } from '../lib/time';
+import { pushDailyWord } from '../widgets/daily-word';
 
 // Local-first lists store. The free tier owns its data on the device; cloud
-// sync arrives as a premium feature (T51). Web persists to localStorage; the
-// native build swaps this driver for expo-sqlite when the iOS app lands (T53).
+// sync arrives as a premium feature (T51). Web persists to localStorage, native
+// to expo-sqlite's key-value store.
 
 const KEY = 'mynichi.lists.v1';
-
-type Driver = {
-  read: () => string | null;
-  write: (value: string) => void;
-};
-
-const memory = new Map<string, string>();
-
-const driver: Driver =
-  Platform.OS === 'web' && typeof localStorage !== 'undefined'
-    ? {
-        read: () => localStorage.getItem(KEY),
-        write: (v) => localStorage.setItem(KEY, v)
-      }
-    : {
-        read: () => memory.get(KEY) ?? null,
-        write: (v) => memory.set(KEY, v)
-      };
 
 const EMPTY: ListsDoc = { version: 1, lists: [] };
 
 function load(): ListsDoc {
   try {
-    const raw = driver.read();
+    const raw = storage.read(KEY);
     if (!raw) return EMPTY;
     const parsed = JSON.parse(raw) as ListsDoc;
     if (parsed.version !== 1 || !Array.isArray(parsed.lists)) return EMPTY;
@@ -54,16 +37,18 @@ function load(): ListsDoc {
 
 let doc: ListsDoc = load();
 const listeners = new Set<() => void>();
+pushDailyWord(doc.lists);
 
 function commit(next: ListsDoc) {
   doc = next;
   try {
-    driver.write(JSON.stringify(doc));
+    storage.write(KEY, JSON.stringify(doc));
   } catch {
     // Storage full or unavailable; keep the in-memory state alive.
   }
   listeners.forEach((fn) => fn());
   syncNow();
+  pushDailyWord(doc.lists);
 }
 
 function subscribe(fn: () => void): () => void {
